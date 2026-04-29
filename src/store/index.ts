@@ -1,0 +1,224 @@
+import { create } from 'zustand';
+
+export interface User {
+  id: string;
+  name: string;
+  role: 'doctor' | 'patient';
+  email: string;
+}
+
+export interface PatientRecord {
+  id: string;
+  name: string;
+  age: number;
+  diagnosis: string;
+  assignedDeviceId: string | null;
+  complianceScore: number;
+  lastSessionDate: string;
+  progressStage: string;
+  contact: string;
+  emergencyContact: string;
+}
+
+export interface SessionConfig {
+  durationMinutes: number;
+  speedPercentage: number;
+  resistanceLevel: number;
+  romLimits: {
+    thumb: number;
+    index: number;
+    middle: number;
+    ring: number;
+    pinky: number;
+  };
+}
+
+export interface SessionHistory {
+  id: string;
+  patientId: string;
+  date: string;
+  durationActual: number; // in seconds
+  durationTarget: number; // in seconds
+  averageGripForce: number;
+  maxMotionRange: number;
+  status: 'completed' | 'incomplete';
+  notes: string;
+}
+
+interface AppState {
+  currentUser: User | null;
+  patients: PatientRecord[];
+  activePatientId: string | null;
+  pairingDevice: boolean;
+  pairedDeviceId: string | null;
+  
+  // Doctor Session
+  activeSession: {
+    isRunning: boolean;
+    isPaused: boolean;
+    config: SessionConfig;
+    elapsedSeconds: number;
+    currentGripForce: number;
+    currentFlex: number[];
+  } | null;
+
+  deviceUrl: string;
+
+  // Actions
+  login: (user: User) => void;
+  logout: () => void;
+  setActivePatient: (id: string | null) => void;
+  updatePatient: (id: string, data: Partial<PatientRecord>) => void;
+  setDeviceUrl: (url: string) => void;
+  connectDevice: () => Promise<void>;
+  disconnectDevice: () => void;
+  
+  startSession: (config: SessionConfig) => void;
+  pauseSession: () => void;
+  resumeSession: () => void;
+  emergencyStop: () => void;
+  stopSession: (notes?: string) => void;
+  updateSessionTick: (elapsed: number, grip: number, flex: number[]) => void;
+}
+
+const mockPatients: PatientRecord[] = [
+  { id: '1', name: 'John Doe', age: 45, diagnosis: 'Post-stroke hemiparesis', assignedDeviceId: null, complianceScore: 85, lastSessionDate: '2023-10-24', progressStage: 'Phase 2', contact: 'john@example.com', emergencyContact: 'Jane Doe (Wife): 555-0100' },
+  { id: '2', name: 'Sarah Smith', age: 32, diagnosis: 'Carpal Tunnel Syndrome (Post-op)', assignedDeviceId: null, complianceScore: 92, lastSessionDate: '2023-10-25', progressStage: 'Phase 1', contact: 'sarah@example.com', emergencyContact: 'Mike Smith (Husband): 555-0101' },
+];
+
+export const useStore = create<AppState>((set, get) => ({
+  currentUser: null,
+  patients: mockPatients,
+  activePatientId: null,
+  pairingDevice: false,
+  pairedDeviceId: null,
+  activeSession: null,
+  deviceUrl: 'http://192.168.4.1',
+
+  login: (user) => set({ currentUser: user }),
+  logout: () => set({ currentUser: null, activeSession: null, activePatientId: null, pairedDeviceId: null }),
+  setActivePatient: (id) => set({ activePatientId: id }),
+  updatePatient: (id, data) => set(state => ({
+    patients: state.patients.map(p => p.id === id ? { ...p, ...data } : p)
+  })),
+  setDeviceUrl: (url) => set({ deviceUrl: url }),
+
+  // Simulated Bluetooth connection / WiFi integration
+  connectDevice: async () => {
+    set({ pairingDevice: true });
+    try {
+      const url = get().deviceUrl;
+      if (url) {
+        // Attempt to ping the device
+        try {
+          // Send a request to the configured ESP32 device
+          const response = await fetch(`${url}/api/status`, {
+            method: 'GET',
+            mode: 'cors', // The ESP32 should ideally support CORS, or use a proxy
+            // If it takes longer than 2 seconds, assume it's unreachable
+            signal: AbortSignal.timeout(2000), 
+          });
+          if (response.ok) {
+             set({ pairedDeviceId: `ESP32-Network-Device`, pairingDevice: false });
+             return;
+          }
+        } catch (e) {
+          console.warn('Network device unreachable or returned an error, falling back to simulated connection.', e);
+        }
+      }
+
+      // Simulate connection if network fetch failed
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      set({ pairedDeviceId: `DEV-${Math.floor(Math.random() * 10000)}`, pairingDevice: false });
+    } catch (e) {
+      set({ pairingDevice: false });
+      console.error(e);
+    }
+  },
+  disconnectDevice: () => set({ pairedDeviceId: null, activeSession: null }),
+
+  startSession: async (config) => {
+    // Attempt to start the session on the device
+    const { deviceUrl, pairedDeviceId } = get();
+    if (pairedDeviceId === 'ESP32-Network-Device' && deviceUrl) {
+      try {
+        await fetch(`${deviceUrl}/api/start`, { 
+          method: 'POST', 
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(config),
+          signal: AbortSignal.timeout(2000)
+        });
+      } catch (e) {
+        console.warn('Failed to send start command to device', e);
+      }
+    }
+    
+    set({
+      activeSession: {
+        isRunning: true,
+        isPaused: false,
+        config,
+        elapsedSeconds: 0,
+        currentGripForce: 0,
+        currentFlex: [0,0,0,0,0]
+      }
+    });
+  },
+  pauseSession: async () => {
+    const { deviceUrl, pairedDeviceId, activeSession } = get();
+    if (pairedDeviceId === 'ESP32-Network-Device' && deviceUrl) {
+      try {
+        await fetch(`${deviceUrl}/api/pause`, { method: 'POST', signal: AbortSignal.timeout(2000) });
+      } catch (e) {
+        console.warn('Failed to send pause command to device', e);
+      }
+    }
+    set(state => ({
+      activeSession: state.activeSession ? { ...state.activeSession, isPaused: true } : null
+    }));
+  },
+  resumeSession: async () => {
+    const { deviceUrl, pairedDeviceId } = get();
+    if (pairedDeviceId === 'ESP32-Network-Device' && deviceUrl) {
+      try {
+        await fetch(`${deviceUrl}/api/resume`, { method: 'POST', signal: AbortSignal.timeout(2000) });
+      } catch (e) {
+        console.warn('Failed to send resume command to device', e);
+      }
+    }
+    set(state => ({
+      activeSession: state.activeSession ? { ...state.activeSession, isPaused: false } : null
+    }));
+  },
+  emergencyStop: async () => {
+    const { deviceUrl, pairedDeviceId } = get();
+    if (pairedDeviceId === 'ESP32-Network-Device' && deviceUrl) {
+      try {
+        await fetch(`${deviceUrl}/api/emerg`, { method: 'POST', signal: AbortSignal.timeout(2000) });
+      } catch (e) {
+        console.warn('Failed to send emergency stop command to device', e);
+      }
+    }
+    set({ activeSession: null }); 
+  },
+  stopSession: async (notes) => {
+    const { deviceUrl, pairedDeviceId } = get();
+    if (pairedDeviceId === 'ESP32-Network-Device' && deviceUrl) {
+      try {
+        await fetch(`${deviceUrl}/api/stop`, { method: 'POST', signal: AbortSignal.timeout(2000) });
+      } catch (e) {
+        console.warn('Failed to send stop command to device', e);
+      }
+    }
+    set({ activeSession: null }); // We would ideally save to history here
+  },
+  
+  updateSessionTick: (elapsed, grip, flex) => set(state => ({
+    activeSession: state.activeSession ? {
+      ...state.activeSession,
+      elapsedSeconds: elapsed,
+      currentGripForce: grip,
+      currentFlex: flex
+    } : null
+  }))
+}));
