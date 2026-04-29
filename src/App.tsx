@@ -6,6 +6,7 @@ import DoctorPatients from './pages/doctor/Patients';
 import DoctorSession from './pages/doctor/Session';
 import DoctorReports from './pages/doctor/Reports';
 import DoctorCalendar from './pages/doctor/Calendar';
+import DoctorTeleRehab from './pages/doctor/TeleRehab';
 import DoctorSettings from './pages/doctor/Settings';
 
 import PatientLayout from './pages/patient/Layout';
@@ -13,6 +14,8 @@ import PatientDashboard from './pages/patient/Dashboard';
 import PatientSessions from './pages/patient/Sessions';
 import PatientLiveSession from './pages/patient/LiveSession';
 import PatientReports from './pages/patient/Reports';
+import PatientTeleRehab from './pages/patient/TeleRehab';
+import PatientGames from './pages/patient/Games';
 import PatientProfile from './pages/patient/Profile';
 
 export default function App() {
@@ -29,6 +32,7 @@ export default function App() {
           <Route path="session" element={<DoctorSession />} />
           <Route path="reports" element={<DoctorReports />} />
           <Route path="calendar" element={<DoctorCalendar />} />
+          <Route path="tele-rehab" element={<DoctorTeleRehab />} />
           <Route path="settings" element={<DoctorSettings />} />
         </Route>
 
@@ -39,6 +43,8 @@ export default function App() {
           <Route path="sessions" element={<PatientSessions />} />
           <Route path="live" element={<PatientLiveSession />} />
           <Route path="reports" element={<PatientReports />} />
+          <Route path="tele-rehab" element={<PatientTeleRehab />} />
+          <Route path="games" element={<PatientGames />} />
           <Route path="profile" element={<PatientProfile />} />
         </Route>
       </Routes>

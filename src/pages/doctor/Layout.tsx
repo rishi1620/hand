@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
-import { LayoutDashboard, Users, Activity, FileBarChart, Calendar, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, FileBarChart, Calendar, Settings, LogOut, Video } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -21,6 +21,7 @@ export default function DoctorLayout() {
     { to: '/doctor/session', icon: Activity, label: 'Live Session' },
     { to: '/doctor/reports', icon: FileBarChart, label: 'Reports' },
     { to: '/doctor/calendar', icon: Calendar, label: 'Scheduler' },
+    { to: '/doctor/tele-rehab', icon: Video, label: 'Tele-Rehab' },
     { to: '/doctor/settings', icon: Settings, label: 'Settings' },
   ];
 

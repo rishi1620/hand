@@ -1,7 +1,7 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
-import { LayoutDashboard, History, PlayCircle, BarChart2, User, MessageCircle, LogOut } from 'lucide-react';
+import { LayoutDashboard, History, PlayCircle, BarChart2, User, MessageCircle, LogOut, Video, Gamepad2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -19,6 +19,8 @@ export default function PatientLayout() {
     { to: '/patient/sessions', icon: History, label: 'My Sessions' },
     { to: '/patient/live', icon: PlayCircle, label: 'Live Session' },
     { to: '/patient/reports', icon: BarChart2, label: 'Progress' },
+    { to: '/patient/tele-rehab', icon: Video, label: 'Tele-Rehab' },
+    { to: '/patient/games', icon: Gamepad2, label: 'Games' },
     { to: '/patient/profile', icon: User, label: 'Profile' },
   ];
 
