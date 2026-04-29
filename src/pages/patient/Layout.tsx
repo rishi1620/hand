@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
 import { LayoutDashboard, History, PlayCircle, BarChart2, User, MessageCircle, LogOut, Video, Gamepad2 } from 'lucide-react';
@@ -10,8 +10,7 @@ export default function PatientLayout() {
   const navigate = useNavigate();
 
   if (!currentUser || currentUser.role !== 'patient') {
-    navigate('/');
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   const navItems = [

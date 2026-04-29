@@ -1,4 +1,4 @@
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
 import { LayoutDashboard, Users, Activity, FileBarChart, Calendar, Settings, LogOut, Video } from 'lucide-react';
@@ -11,8 +11,7 @@ export default function DoctorLayout() {
 
   // Basic auth guard
   if (!currentUser || currentUser.role !== 'doctor') {
-    navigate('/');
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   const navItems = [
