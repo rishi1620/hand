@@ -50,6 +50,7 @@ interface AppState {
   patients: PatientRecord[];
   activePatientId: string | null;
   pairingDevice: boolean;
+  pairingStatus: string;
   pairedDeviceId: string | null;
   
   // Doctor Session
@@ -91,6 +92,7 @@ export const useStore = create<AppState>((set, get) => ({
   patients: mockPatients,
   activePatientId: null,
   pairingDevice: false,
+  pairingStatus: '',
   pairedDeviceId: null,
   activeSession: null,
   deviceUrl: 'http://192.168.4.1',
@@ -105,12 +107,14 @@ export const useStore = create<AppState>((set, get) => ({
 
   // Simulated Bluetooth connection / WiFi integration
   connectDevice: async () => {
-    set({ pairingDevice: true });
+    set({ pairingDevice: true, pairingStatus: 'Scanning local network for ESP32 gateway...' });
     try {
       const url = get().deviceUrl;
       if (url) {
         // Attempt to ping the device
         try {
+          await new Promise(resolve => setTimeout(resolve, 800));
+          set({ pairingStatus: `Pinging ${url}...` });
           // Send a request to the configured ESP32 device
           const response = await fetch(`${url}/api/status`, {
             method: 'GET',
@@ -119,7 +123,9 @@ export const useStore = create<AppState>((set, get) => ({
             signal: AbortSignal.timeout(2000), 
           });
           if (response.ok) {
-             set({ pairedDeviceId: `ESP32-Network-Device`, pairingDevice: false });
+             set({ pairingStatus: 'Handshake successful. Establishing secure link...' });
+             await new Promise(resolve => setTimeout(resolve, 500));
+             set({ pairedDeviceId: `ESP32-Network-Device`, pairingDevice: false, pairingStatus: '' });
              return;
           }
         } catch (e) {
@@ -127,15 +133,18 @@ export const useStore = create<AppState>((set, get) => ({
         }
       }
 
+      set({ pairingStatus: 'Failed to find local node. Falling back to simulated connection.' });
       // Simulate connection if network fetch failed
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      set({ pairedDeviceId: `DEV-${Math.floor(Math.random() * 10000)}`, pairingDevice: false });
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      set({ pairingStatus: 'Mocking telemetry data feed...' });
+      await new Promise(resolve => setTimeout(resolve, 800));
+      set({ pairedDeviceId: `DEV-${Math.floor(Math.random() * 10000)}`, pairingDevice: false, pairingStatus: '' });
     } catch (e) {
-      set({ pairingDevice: false });
+      set({ pairingDevice: false, pairingStatus: 'Failed to connect.' });
       console.error(e);
     }
   },
-  disconnectDevice: () => set({ pairedDeviceId: null, activeSession: null }),
+  disconnectDevice: () => set({ pairedDeviceId: null, activeSession: null, pairingStatus: '' }),
 
   startSession: async (config) => {
     // Attempt to start the session on the device

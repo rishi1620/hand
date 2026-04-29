@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, Input, Label } from '@/components/ui/components';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { useStore } from '@/store';
 import { PlayCircle, Square, PauseCircle, Activity, Globe, AlertTriangle, Undo, Redo, Loader2 } from 'lucide-react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
@@ -25,12 +26,20 @@ const playWarningBeep = () => {
 };
 
 export default function DoctorSession() {
-  const { patients, startSession, pauseSession, stopSession, activeSession, pairedDeviceId, connectDevice, updateSessionTick, pairingDevice } = useStore();
+  const { patients, startSession, pauseSession, stopSession, activeSession, pairedDeviceId, connectDevice, updateSessionTick, pairingDevice, pairingStatus } = useStore();
   const [selectedPatientId, setSelectedPatientId] = useState<string>('');
   const [chartData, setChartData] = useState<any[]>([]);
   const [deviceTelemetry, setDeviceTelemetry] = useState<any>(null);
   const [deviceError, setDeviceError] = useState<string | null>(null);
   const previousApproachingRef = useRef<boolean[]>(Array(5).fill(false));
+  
+  const [isPreCheckModalOpen, setIsPreCheckModalOpen] = useState(false);
+  const [preChecks, setPreChecks] = useState({
+    comfortable: false,
+    secure: false,
+    obstructions: false,
+    emergency: false
+  });
   
   const [configHistory, setConfigHistory] = useState([{
     durationMinutes: 15,
@@ -73,9 +82,20 @@ export default function DoctorSession() {
   const handleStart = () => {
     if (!selectedPatientId) return alert('Select a patient first');
     if (!pairedDeviceId) return alert('Connect to remote IoT device first');
+    setIsPreCheckModalOpen(true);
+  };
+
+  const confirmStartSession = () => {
+    setIsPreCheckModalOpen(false);
     startSession(sessionConfig);
     setChartData([]);
     setDeviceError(null);
+    setPreChecks({
+      comfortable: false,
+      secure: false,
+      obstructions: false,
+      emergency: false
+    });
   };
 
   // Simulation tick logic
@@ -211,20 +231,22 @@ export default function DoctorSession() {
                 }
               }}>Initialize Servos</Button>
             )}
-            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${pairedDeviceId ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : (pairingDevice ? 'bg-blue-50 text-blue-700 border-blue-200 animate-pulse' : 'bg-secondary text-muted-foreground')}`}>
-               {pairingDevice ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
-               {pairedDeviceId ? `Cloud Connected: ${pairedDeviceId}` : (pairingDevice ? 'Attempting to link device...' : 'IoT Disconnected')}
+            <div className="flex flex-col items-end gap-2">
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border transition-colors ${pairedDeviceId ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : (pairingDevice ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-secondary text-muted-foreground')}`}>
+                 {pairingDevice ? <Loader2 className="w-4 h-4 animate-spin" /> : <Globe className="w-4 h-4" />}
+                 {pairedDeviceId ? `Cloud Connected: ${pairedDeviceId}` : (pairingDevice ? (pairingStatus || 'Linking...') : 'IoT Disconnected')}
+              </div>
+              {!pairedDeviceId && (
+                 <Button size="sm" onClick={connectDevice} disabled={pairingDevice} className="w-full sm:w-auto">
+                   {pairingDevice ? (
+                      <>
+                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                         Connecting
+                      </>
+                   ) : 'Link Remote Node'}
+                 </Button>
+              )}
             </div>
-            {!pairedDeviceId && (
-               <Button size="sm" onClick={connectDevice} disabled={pairingDevice}>
-                 {pairingDevice ? (
-                    <>
-                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                       Linking...
-                    </>
-                 ) : 'Link Remote Node'}
-               </Button>
-            )}
         </div>
       </div>
 
@@ -288,18 +310,38 @@ export default function DoctorSession() {
                 </div>
 
                 <div className="space-y-4 pt-4 border-t">
-                  <Label>Range of Motion Limits (Degrees)</Label>
-                  {['thumb', 'index', 'middle', 'ring', 'pinky'].map((finger) => (
+                  <div className="flex justify-between items-center">
+                    <Label>Range of Motion Limits (Degrees)</Label>
+                    {activeSession?.isRunning && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1.5">
+                         <span className="w-2 h-2 rounded-full bg-primary inline-block"></span> Current Flex
+                      </span>
+                    )}
+                  </div>
+                  {['thumb', 'index', 'middle', 'ring', 'pinky'].map((finger, i) => {
+                    const limit = sessionConfig.romLimits[finger as keyof typeof sessionConfig.romLimits];
+                    const current = activeSession?.isRunning ? activeSession.currentFlex[i] : null;
+                    const isApproaching = current !== null && current >= limit * 0.95;
+                    const limitExceeded = current !== null && current > limit;
+                    const statusColor = limitExceeded ? 'text-destructive' : (isApproaching ? 'text-amber-500' : 'text-primary');
+                    const barColor = limitExceeded ? 'bg-destructive' : (isApproaching ? 'bg-amber-500' : 'bg-primary');
+
+                    return (
                     <div key={finger} className="space-y-2">
-                       <div className="flex justify-between">
-                         <span className="text-xs font-medium capitalize text-muted-foreground">{finger}</span>
-                         <span className="text-xs text-muted-foreground">{sessionConfig.romLimits[finger as keyof typeof sessionConfig.romLimits]}°</span>
+                       <div className="flex justify-between items-center">
+                         <span className={`text-xs font-medium capitalize ${current !== null && (limitExceeded || isApproaching) ? statusColor + ' font-bold' : 'text-muted-foreground'}`}>
+                           {finger}
+                         </span>
+                         <div className="flex gap-3 text-xs font-mono">
+                           {current !== null && <span>Curr: <span className={limitExceeded || isApproaching ? statusColor : ''}>{current.toFixed(0)}°</span></span>}
+                           <span className="text-muted-foreground">Max: {limit}°</span>
+                         </div>
                        </div>
                        <Slider
                          min={0}
                          max={90}
                          step={1}
-                         value={[sessionConfig.romLimits[finger as keyof typeof sessionConfig.romLimits]]}
+                         value={[limit]}
                          onValueChange={([val]) => {
                            handleConfigChange({
                              ...sessionConfig, 
@@ -307,8 +349,21 @@ export default function DoctorSession() {
                            });
                          }}
                        />
+                       {current !== null && (
+                         <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden mt-1 relative">
+                            <div 
+                              className={`absolute top-0 left-0 h-full transition-all duration-300 ${barColor}`} 
+                              style={{ width: `${Math.min(100, (current / 90) * 100)}%` }} 
+                            />
+                            {/* Visual Limit Marker on the progress bar */}
+                            <div 
+                              className="absolute top-0 bottom-0 w-0.5 bg-black/30 z-10" 
+                              style={{ left: `${(limit / 90) * 100}%` }} 
+                            />
+                         </div>
+                       )}
                     </div>
-                  ))}
+                  )})}
                 </div>
               </div>
             </CardContent>
@@ -500,6 +555,44 @@ export default function DoctorSession() {
           </Card>
         </div>
       </div>
+
+      <Dialog open={isPreCheckModalOpen} onOpenChange={setIsPreCheckModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Pre-Session Safety Checks</DialogTitle>
+            <DialogDescription>
+              Please confirm the following safety checks before initiating the remote session.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={preChecks.comfortable} onChange={e => setPreChecks({...preChecks, comfortable: e.target.checked})} />
+              <span className="font-medium">Patient is comfortable and ready?</span>
+            </label>
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={preChecks.secure} onChange={e => setPreChecks({...preChecks, secure: e.target.checked})} />
+              <span className="font-medium">Device is securely attached to the patient?</span>
+            </label>
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={preChecks.obstructions} onChange={e => setPreChecks({...preChecks, obstructions: e.target.checked})} />
+              <span className="font-medium">No obstructions in the device path?</span>
+            </label>
+            <label className="flex items-center space-x-3 cursor-pointer">
+              <input type="checkbox" className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" checked={preChecks.emergency} onChange={e => setPreChecks({...preChecks, emergency: e.target.checked})} />
+              <span className="font-medium">Emergency stop is accessible?</span>
+            </label>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPreCheckModalOpen(false)}>Cancel</Button>
+            <Button 
+              onClick={confirmStartSession}
+              disabled={!Object.values(preChecks).every(Boolean)}
+            >
+              Confirm & Start
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
