@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import pino from 'pino';
@@ -25,6 +26,7 @@ app.use(cors());
 // Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Standardized API Response Formatter
 export const successResponse = (res: Response, data: any, statusCode: number = 200) => {
