@@ -40,6 +40,27 @@ export const AppStrings = {
     // Portal Titles
     DoctorPortalTitle: "Doctor Portal",
     PatientPortalTitle: "Patient Portal",
+    
+    // Patient Dashboard
+    WelcomeBack: "Welcome back",
+    DailySummary: "Here is your daily recovery summary.",
+    TodaySessionPlan: "Today's Session Plan",
+    PrescribedBy: "Prescribed by",
+    Minutes: "MINUTES",
+    Intensity: "INTENSITY",
+    StartNow: "Start Now",
+    CurrentStreak: "Current Streak",
+    Days: "days",
+    ComplianceScore: "Compliance Score",
+    RecentActivity: "Recent Activity",
+    ViewAll: "View All",
+    SessionCompleted: "Session Completed",
+    GamifiedExercise: "Gamified Exercise",
+    Score: "Score",
+    Completed: "Completed",
+    UpcomingAppointments: "Upcoming Appointments",
+    Dr: "Dr.",
+    JoinCall: "Join Call",
   },
   bn: {
     AppName: "হ্যান্ডরিহ্যাব প্রো",
@@ -76,6 +97,27 @@ export const AppStrings = {
   
     DoctorPortalTitle: "ডাক্তার পোর্টাল",
     PatientPortalTitle: "রোগী পোর্টাল",
+    
+    // Patient Dashboard
+    WelcomeBack: "স্বাগতম",
+    DailySummary: "এখানে আপনার দৈনিক পুনরুদ্ধারের সারসংক্ষেপ রয়েছে।",
+    TodaySessionPlan: "আজকের সেশন প্ল্যান",
+    PrescribedBy: "পরামর্শ দিয়েছেন",
+    Minutes: "মিনিট",
+    Intensity: "তীব্রতা",
+    StartNow: "এখন শুরু করুন",
+    CurrentStreak: "বর্তমান ধারাবাহিকতা",
+    Days: "দিন",
+    ComplianceScore: "কমপ্লায়েন্স স্কোর",
+    RecentActivity: "সাম্প্রতিক কার্যকলাপ",
+    ViewAll: "সব দেখুন",
+    SessionCompleted: "সেশন সম্পন্ন",
+    GamifiedExercise: "গ্যামিফাইড ব্যায়াম",
+    Score: "স্কোর",
+    Completed: "সম্পন্ন",
+    UpcomingAppointments: "আসন্ন অ্যাপয়েন্টমেন্ট",
+    Dr: "ডাঃ",
+    JoinCall: "কলে যোগ দিন",
   }
 };
 

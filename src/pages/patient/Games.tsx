@@ -3,8 +3,10 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { PlayCircle, Target, Trophy, Flame, Keyboard } from "lucide-react";
+import { useStore } from "@/store";
 
 export default function PatientGames() {
+  const { language } = useStore();
   const [activeGame, setActiveGame] = useState<'grip' | 'steady' | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [score, setScore] = useState(0);
@@ -83,8 +85,8 @@ export default function PatientGames() {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Gamified Exercises</h1>
-        <p className="text-muted-foreground">Make your rehabilitation fun and engaging with interactive games.</p>
+        <h1 className="text-3xl font-bold tracking-tight">{language === 'bn' ? 'গ্যামিফাইড ব্যায়াম' : 'Gamified Exercises'}</h1>
+        <p className="text-muted-foreground">{language === 'bn' ? 'ইন্টারেক্টিভ গেমগুলির মাধ্যমে আপনার পুনর্বাসনকে মজাদার এবং আকর্ষণীয় করুন।' : 'Make your rehabilitation fun and engaging with interactive games.'}</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -94,16 +96,16 @@ export default function PatientGames() {
              <Trophy className="w-12 h-12 text-white z-10" />
           </div>
           <CardHeader>
-            <CardTitle>Grip & Catch</CardTitle>
-            <CardDescription>Squeeze the device to catch falling objects to improve reaction time and peak force.</CardDescription>
+            <CardTitle>{language === 'bn' ? 'গ্রিপ এবং ক্যাচ' : 'Grip & Catch'}</CardTitle>
+            <CardDescription>{language === 'bn' ? 'প্রতিক্রিয়া সময় এবং শক্তির উন্নতির জন্য পড়তে থাকা বস্তুগুলি ধরতে ডিভাইসটি চাপুন।' : 'Squeeze the device to catch falling objects to improve reaction time and peak force.'}</CardDescription>
           </CardHeader>
           <CardContent className="mt-auto">
              <div className="flex justify-between items-center text-sm mb-4 text-slate-500">
-               <span className="flex items-center"><Flame className="w-4 h-4 mr-1 text-orange-500" /> High Score: 1240</span>
-               <span>Level: 3</span>
+               <span className="flex items-center"><Flame className="w-4 h-4 mr-1 text-orange-500" /> {language === 'bn' ? 'সর্বোচ্চ স্কোর: ১২৪০' : 'High Score: 1240'}</span>
+               <span>{language === 'bn' ? 'লেভেল: ৩' : 'Level: 3'}</span>
              </div>
              <Button className="w-full gap-2" onClick={() => startGame('grip')}>
-               <PlayCircle className="w-4 h-4" /> Play Now
+               <PlayCircle className="w-4 h-4" /> {language === 'bn' ? 'এখন শুরু করুন' : 'Play Now'}
              </Button>
           </CardContent>
         </Card>
@@ -114,31 +116,31 @@ export default function PatientGames() {
              <Target className="w-12 h-12 text-white z-10" />
           </div>
           <CardHeader>
-            <CardTitle>Steady Hold</CardTitle>
-            <CardDescription>Maintain a constant grip force within the target zone to keep the spaceship flying straight.</CardDescription>
+            <CardTitle>{language === 'bn' ? 'অবিচল লক্ষ্য' : 'Steady Hold'}</CardTitle>
+            <CardDescription>{language === 'bn' ? 'স্পেসশিপটি সোজা উড়তে রাখতে লক্ষ্য অঞ্চলের মধ্যে একটি ধ্রুবক গ্রিপ শক্তি বজায় রাখুন।' : 'Maintain a constant grip force within the target zone to keep the spaceship flying straight.'}</CardDescription>
           </CardHeader>
           <CardContent className="mt-auto">
              <div className="flex justify-between items-center text-sm mb-4 text-slate-500">
-               <span className="flex items-center"><Flame className="w-4 h-4 mr-1 text-orange-500" /> High Score: 45s</span>
-               <span>Level: 1</span>
+               <span className="flex items-center"><Flame className="w-4 h-4 mr-1 text-orange-500" /> {language === 'bn' ? 'সর্বোচ্চ সময়: ৪৫সে' : 'High Score: 45s'}</span>
+               <span>{language === 'bn' ? 'লেভেল: ১' : 'Level: 1'}</span>
              </div>
              <Button className="w-full gap-2" onClick={() => startGame('steady')}>
-               <PlayCircle className="w-4 h-4" /> Play Now
+               <PlayCircle className="w-4 h-4" /> {language === 'bn' ? 'এখন শুরু করুন' : 'Play Now'}
              </Button>
           </CardContent>
         </Card>
 
         <Card className="hover:border-purple-500 transition-colors group cursor-pointer overflow-hidden flex flex-col border-dashed opacity-70">
           <div className="bg-slate-100 h-32 flex items-center justify-center p-6 relative overflow-hidden">
-             <span className="font-bold text-slate-400">Coming Soon</span>
+             <span className="font-bold text-slate-400">{language === 'bn' ? 'শীঘ্রই আসছে' : 'Coming Soon'}</span>
           </div>
           <CardHeader>
-            <CardTitle className="text-slate-500">Rhythm Flex</CardTitle>
-            <CardDescription>Flex your fingers to the beat of the music to improve coordination.</CardDescription>
+            <CardTitle className="text-slate-500">{language === 'bn' ? 'ছন্দ ফ্লেক্স' : 'Rhythm Flex'}</CardTitle>
+            <CardDescription>{language === 'bn' ? 'সমন্বয় উন্নত করতে সঙ্গীত এর ছন্দে আপনার আঙ্গুলগুলি ফ্লেক্স করুন।' : 'Flex your fingers to the beat of the music to improve coordination.'}</CardDescription>
           </CardHeader>
           <CardContent className="mt-auto">
              <Button variant="secondary" className="w-full gap-2" disabled>
-               Locked
+               {language === 'bn' ? 'লকড' : 'Locked'}
              </Button>
           </CardContent>
         </Card>
@@ -148,24 +150,24 @@ export default function PatientGames() {
         <DialogContent className="sm:max-w-md text-center">
           <DialogHeader>
             <DialogTitle className="text-2xl">
-              {activeGame === 'grip' ? 'Grip & Catch' : 'Steady Hold'}
+              {activeGame === 'grip' ? (language === 'bn' ? 'গ্রিপ এবং ক্যাচ' : 'Grip & Catch') : (language === 'bn' ? 'অবিচল লক্ষ্য' : 'Steady Hold')}
             </DialogTitle>
             <DialogDescription>
               {isPlaying 
-                ? "Interactive Simulation Mode running." 
-                : "Session Completed!"}
+                ? (language === 'bn' ? 'ইন্টারেক্টিভ সিমুলেশন মোড চলছে।' : "Interactive Simulation Mode running.")
+                : (language === 'bn' ? 'সেশন শেষ!' : "Session Completed!")}
             </DialogDescription>
           </DialogHeader>
           
           <div className="py-6 space-y-6">
             <div className="flex justify-between text-lg font-bold px-2">
-              <div className="text-blue-600 tabular-nums">Time: {timeLeft}s</div>
-              <div className="text-emerald-600 tabular-nums">Score: {score}</div>
+              <div className="text-blue-600 tabular-nums">{language === 'bn' ? 'সময়: ' : 'Time: '}{timeLeft}s</div>
+              <div className="text-emerald-600 tabular-nums">{language === 'bn' ? 'স্কোর: ' : 'Score: '}{score}</div>
             </div>
 
             <div className="space-y-3">
               <div className="flex justify-between text-sm font-medium text-slate-500 px-1">
-                 <span>Simulated Grip Force</span>
+                 <span>{language === 'bn' ? 'সিমুলেটেড গ্রিপ ফোর্স' : 'Simulated Grip Force'}</span>
                  <span className="tabular-nums">{gripForce}%</span>
               </div>
               <div className="h-10 bg-slate-100 rounded-full overflow-hidden relative border border-slate-200 shadow-inner">
@@ -185,10 +187,10 @@ export default function PatientGames() {
               </div>
               
               {activeGame === 'steady' && (
-                <p className="text-xs text-slate-500 font-medium">Keep the bar inside the light green zone!</p>
+                <p className="text-xs text-slate-500 font-medium">{language === 'bn' ? 'হালকা সবুজ অঞ্চলে বার রাখুন!' : 'Keep the bar inside the light green zone!'}</p>
               )}
               {activeGame === 'grip' && (
-                <p className="text-xs text-slate-500 font-medium">Repeatedly squeeze past the 80% mark!</p>
+                <p className="text-xs text-slate-500 font-medium">{language === 'bn' ? '৮০% মার্ক পার হয়ে বারবার চাপ দিন!' : 'Repeatedly squeeze past the 80% mark!'}</p>
               )}
             </div>
 
@@ -209,14 +211,14 @@ export default function PatientGames() {
                }}
             >
               <Keyboard className="mr-2 h-5 w-5" />
-              {isPlaying ? "TAP HERE OR PRESS SPACE" : "GAME OVER"}
+              {isPlaying ? (language === 'bn' ? 'এখানে ট্যাপ করুন অথবা স্পেস চাপুন' : "TAP HERE OR PRESS SPACE") : (language === 'bn' ? 'খেলা শেষ' : "GAME OVER")}
             </Button>
           </div>
 
           {!isPlaying && (
             <DialogFooter className="sm:justify-center">
-              <Button variant="secondary" onClick={closeGame}>Exit</Button>
-              <Button onClick={() => startGame(activeGame!)}>Play Again</Button>
+              <Button variant="secondary" onClick={closeGame}>{language === 'bn' ? 'প্রস্থান' : 'Exit'}</Button>
+              <Button onClick={() => startGame(activeGame!)}>{language === 'bn' ? 'আবার খেলুন' : 'Play Again'}</Button>
             </DialogFooter>
           )}
         </DialogContent>

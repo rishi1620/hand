@@ -38,7 +38,7 @@ export default function PatientLayout() {
         <div className="flex items-center gap-4">
            {/* Notification or Messages Quick Icon here if needed */}
            <div className="flex items-center gap-2 text-sm font-medium mr-4">
-              Hello, {currentUser.name.split(' ')[0]}
+              {language === 'en' ? 'Hello' : 'হ্যালো'}, {currentUser.name.split(' ')[0]}
            </div>
            {/* Language Selector */}
            <Button variant="ghost" size="sm" onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')} className="gap-2">
