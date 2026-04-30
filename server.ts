@@ -47,7 +47,9 @@ export const errorResponse = (res: Response, error: string, statusCode: number =
 
 // Global Request Logger Middleware
 app.use((req, res, next) => {
-  logger.info(`[${req.method}] ${req.originalUrl}`);
+  if (req.originalUrl.startsWith('/api')) {
+    logger.info(`[${req.method}] ${req.originalUrl}`);
+  }
   next();
 });
 
