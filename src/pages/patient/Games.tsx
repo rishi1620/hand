@@ -69,7 +69,10 @@ export default function PatientGames() {
     setScore(0);
     setTimeLeft(30);
     setGripForce(0);
-    setIsPlaying(true);
+    // Add small delay to avoid state transition clashes
+    setTimeout(() => {
+      setIsPlaying(true);
+    }, 100);
   };
 
   const closeGame = () => {

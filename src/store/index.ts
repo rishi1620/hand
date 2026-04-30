@@ -46,6 +46,8 @@ export interface SessionHistory {
 }
 
 interface AppState {
+  language: 'en' | 'bn';
+  setLanguage: (lang: 'en' | 'bn') => void;
   currentUser: User | null;
   patients: PatientRecord[];
   activePatientId: string | null;
@@ -88,6 +90,8 @@ const mockPatients: PatientRecord[] = [
 ];
 
 export const useStore = create<AppState>((set, get) => ({
+  language: 'en',
+  setLanguage: (lang) => set({ language: lang }),
   currentUser: null,
   patients: mockPatients,
   activePatientId: null,

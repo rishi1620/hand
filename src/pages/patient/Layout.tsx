@@ -1,26 +1,27 @@
 import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
-import { LayoutDashboard, History, PlayCircle, BarChart2, User, MessageCircle, LogOut, Video, Gamepad2 } from 'lucide-react';
+import { LayoutDashboard, History, PlayCircle, BarChart2, User, MessageCircle, LogOut, Video, Gamepad2, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 export default function PatientLayout() {
-  const { currentUser, logout } = useStore();
+  const { currentUser, logout, language, setLanguage } = useStore();
   const navigate = useNavigate();
+  const strings = AppStrings[language];
 
   if (!currentUser || currentUser.role !== 'patient') {
     return <Navigate to="/" replace />;
   }
 
   const navItems = [
-    { to: '/patient/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { to: '/patient/sessions', icon: History, label: 'My Sessions' },
-    { to: '/patient/live', icon: PlayCircle, label: 'Live Session' },
-    { to: '/patient/reports', icon: BarChart2, label: 'Progress' },
-    { to: '/patient/tele-rehab', icon: Video, label: 'Tele-Rehab' },
-    { to: '/patient/games', icon: Gamepad2, label: 'Games' },
-    { to: '/patient/profile', icon: User, label: 'Profile' },
+    { to: '/patient/dashboard', icon: LayoutDashboard, label: language === 'bn' ? 'ড্যাশবোর্ড' : 'Dashboard' },
+    { to: '/patient/sessions', icon: History, label: language === 'bn' ? 'আমার সেশনসমূহ' : 'My Sessions' },
+    { to: '/patient/live', icon: PlayCircle, label: language === 'bn' ? 'লাইভ সেশন' : 'Live Session' },
+    { to: '/patient/reports', icon: BarChart2, label: language === 'bn' ? 'অগ্রগতি' : 'Progress' },
+    { to: '/patient/tele-rehab', icon: Video, label: language === 'bn' ? 'টেলি-রিহ্যাব' : 'Tele-Rehab' },
+    { to: '/patient/games', icon: Gamepad2, label: language === 'bn' ? 'গেমস' : 'Games' },
+    { to: '/patient/profile', icon: User, label: language === 'bn' ? 'প্রোফাইল' : 'Profile' },
   ];
 
   return (
@@ -31,7 +32,7 @@ export default function PatientLayout() {
           <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold">
             P
           </div>
-          <span className="font-bold text-lg hidden sm:block">{AppStrings.PatientPortalTitle}</span>
+          <span className="font-bold text-lg hidden sm:block">{strings.PatientPortalTitle}</span>
         </div>
         
         <div className="flex items-center gap-4">
@@ -39,8 +40,13 @@ export default function PatientLayout() {
            <div className="flex items-center gap-2 text-sm font-medium mr-4">
               Hello, {currentUser.name.split(' ')[0]}
            </div>
+           {/* Language Selector */}
+           <Button variant="ghost" size="sm" onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')} className="gap-2">
+             <Globe className="w-4 h-4" />
+             <span className="hidden sm:inline">{language === 'en' ? 'বাংলা' : 'English'}</span>
+           </Button>
            <Button variant="ghost" size="sm" className="text-red-500" onClick={() => { logout(); navigate('/'); }}>
-              <LogOut className="h-4 w-4 mr-2" /> Logout
+              <LogOut className="h-4 w-4 mr-2" /> <span className="hidden sm:inline">{language === 'bn' ? 'লগআউট' : 'Logout'}</span>
            </Button>
         </div>
       </header>

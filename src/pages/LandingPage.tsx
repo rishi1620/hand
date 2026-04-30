@@ -2,11 +2,13 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { AppStrings } from '@/config/strings';
 import { useStore } from '@/store';
-import { Activity, Stethoscope, UserCircle } from 'lucide-react';
+import { Activity, Stethoscope, UserCircle, Globe } from 'lucide-react';
 
 export default function LandingPage() {
   const navigate = useNavigate();
   const setLogin = useStore(state => state.login);
+  const { language, setLanguage } = useStore();
+  const strings = AppStrings[language];
 
   const handleDoctorLogin = () => {
     setLogin({ id: 'doc-1', name: 'Dr. Emily Chen', role: 'doctor', email: 'doc@example.com' });
@@ -23,30 +25,34 @@ export default function LandingPage() {
       <header className="px-6 py-4 border-b flex justify-between items-center bg-white ">
         <div className="flex items-center gap-2">
           <Activity className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold">{AppStrings.AppName}</span>
+          <span className="text-xl font-bold">{strings.AppName}</span>
         </div>
-        <div className="flex gap-4">
-           {/* Navigation links if any */}
+        <div className="flex items-center gap-4">
+           {/* Language Selector */}
+           <Button variant="ghost" size="sm" onClick={() => setLanguage(language === 'en' ? 'bn' : 'en')} className="gap-2">
+             <Globe className="w-4 h-4" />
+             {language === 'en' ? 'বাংলা' : 'English'}
+           </Button>
         </div>
       </header>
 
       <main className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center space-y-6 flex flex-col items-center">
           <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight text-foreground max-w-3xl">
-            {AppStrings.Tagline}
+            {strings.Tagline}
           </h1>
           <p className="text-xl text-muted-foreground  max-w-2xl">
-            {AppStrings.Description}
+            {strings.Description}
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mt-8">
             <Button size="lg" className="h-14 px-8 text-lg gap-2" onClick={handleDoctorLogin}>
               <Stethoscope className="w-5 h-5" />
-              {AppStrings.DoctorLoginBtn}
+              {strings.DoctorLoginBtn}
             </Button>
             <Button variant="outline" size="lg" className="h-14 px-8 text-lg gap-2" onClick={handlePatientLogin}>
               <UserCircle className="w-5 h-5" />
-              {AppStrings.PatientLoginBtn}
+              {strings.PatientLoginBtn}
             </Button>
           </div>
         </div>
@@ -58,8 +64,8 @@ export default function LandingPage() {
             { title: 'Detailed Reports', desc: 'Comprehensive analytics for tracking recovery progress over time.' },
           ].map(feature => (
             <div key={feature.title} className="p-6 rounded-2xl bg-muted  border">
-              <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-              <p className="text-muted-foreground ">{feature.desc}</p>
+              <h3 className="text-xl font-semibold mb-2">{language === 'en' ? feature.title : (feature.title === 'Remote Control' ? 'রিমোট কন্ট্রোল' : feature.title === 'Live Monitoring' ? 'লাইভ মনিটরিং' : 'বিস্তারিত রিপোর্ট')}</h3>
+              <p className="text-muted-foreground ">{language === 'en' ? feature.desc : (feature.title === 'Remote Control' ? 'ফিজিওথেরাপিস্টরা ডিভাইসের প্রতিরোধ এবং গতি রিমোটভাবে সেট করতে পারেন।' : feature.title === 'Live Monitoring' ? 'মোশন সীমা এবং মুষ্টির শক্তির রিয়েল-টাইম প্রতিক্রিয়া।' : 'সময়ের সাথে পুনরুদ্ধারের অগ্রগতি ট্র্যাক করার জন্য বিস্তৃত বিশ্লেষণ।')}</p>
             </div>
           ))}
         </div>
