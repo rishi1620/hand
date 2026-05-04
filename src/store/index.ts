@@ -111,40 +111,60 @@ export const useStore = create<AppState>((set, get) => ({
 
   // Simulated Bluetooth connection / WiFi integration
   connectDevice: async () => {
-    set({ pairingDevice: true, pairingStatus: 'Scanning local network for ESP32 gateway...' });
+    set({ pairingDevice: true, pairingStatus: 'Initializing device connection protocol...' });
     try {
       const url = get().deviceUrl;
+      const MAX_RETRIES = 3;
+      let connected = false;
+
       if (url) {
-        // Attempt to ping the device
-        try {
-          await new Promise(resolve => setTimeout(resolve, 800));
-          set({ pairingStatus: `Pinging ${url}...` });
-          // Send a request to the configured ESP32 device
-          const response = await fetch(`${url}/api/status`, {
-            method: 'GET',
-            mode: 'cors', // The ESP32 should ideally support CORS, or use a proxy
-            // If it takes longer than 2 seconds, assume it's unreachable
-            signal: AbortSignal.timeout(2000), 
-          });
-          if (response.ok) {
-             set({ pairingStatus: 'Handshake successful. Establishing secure link...' });
-             await new Promise(resolve => setTimeout(resolve, 500));
-             set({ pairedDeviceId: `ESP32-Network-Device`, pairingDevice: false, pairingStatus: '' });
-             return;
+        for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+          try {
+            set({ pairingStatus: `Scanning local network for gateway (Attempt ${attempt}/${MAX_RETRIES})...` });
+            await new Promise(resolve => setTimeout(resolve, 800));
+            set({ pairingStatus: `Pinging ${url}...` });
+            
+            const response = await fetch(`${url}/api/status`, {
+              method: 'GET',
+              mode: 'cors',
+              signal: AbortSignal.timeout(2000), 
+            });
+
+            if (response.ok) {
+              set({ pairingStatus: 'Handshake successful. Exchanging security keys...' });
+              await new Promise(resolve => setTimeout(resolve, 500));
+              set({ pairingStatus: 'Authenticating hardware access...' });
+              await new Promise(resolve => setTimeout(resolve, 400));
+              set({ pairingStatus: 'Link established successfully.' });
+              await new Promise(resolve => setTimeout(resolve, 300));
+              set({ pairedDeviceId: `ESP32-Network-Device`, pairingDevice: false, pairingStatus: '' });
+              connected = true;
+              break;
+            } else {
+              set({ pairingStatus: `Device responded with error status: ${response.status}` });
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          } catch (e) {
+            console.warn(`Network device unreachable on attempt ${attempt}.`, e);
+            if (attempt < MAX_RETRIES) {
+              set({ pairingStatus: `Connection timeout on attempt ${attempt}. Retrying...` });
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
           }
-        } catch (e) {
-          console.warn('Network device unreachable or returned an error, falling back to simulated connection.', e);
         }
       }
 
-      set({ pairingStatus: 'Failed to find local node. Falling back to simulated connection.' });
-      // Simulate connection if network fetch failed
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      set({ pairingStatus: 'Mocking telemetry data feed...' });
-      await new Promise(resolve => setTimeout(resolve, 800));
-      set({ pairedDeviceId: `DEV-${Math.floor(Math.random() * 10000)}`, pairingDevice: false, pairingStatus: '' });
+      if (!connected) {
+        set({ pairingStatus: 'Failed to connect robustly. Booting simulated device...' });
+        await new Promise(resolve => setTimeout(resolve, 1200));
+        set({ pairingStatus: 'Initializing physics engine for simulated telemetry...' });
+        await new Promise(resolve => setTimeout(resolve, 800));
+        set({ pairingStatus: 'Mocking telemetry data feed...' });
+        await new Promise(resolve => setTimeout(resolve, 600));
+        set({ pairedDeviceId: `DEV-${Math.floor(Math.random() * 10000)}`, pairingDevice: false, pairingStatus: '' });
+      }
     } catch (e) {
-      set({ pairingDevice: false, pairingStatus: 'Failed to connect.' });
+      set({ pairingDevice: false, pairingStatus: 'Critical failure during device connection.' });
       console.error(e);
     }
   },

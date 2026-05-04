@@ -94,8 +94,41 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, () => {
+  const httpServer = app.listen(PORT, () => {
     logger.info(`Server running on http://0.0.0.0:${PORT}`);
+  });
+
+  const { Server } = await import("socket.io");
+  const io = new Server(httpServer, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
+
+  io.on("connection", (socket) => {
+    logger.info(`Socket connected: ${socket.id}`);
+
+    socket.on("join-room", (roomId) => {
+      socket.join(roomId);
+      logger.info(`Socket ${socket.id} joined room ${roomId}`);
+    });
+
+    socket.on("offer", (data) => {
+      socket.to(data.roomId).emit("offer", { offer: data.offer, senderId: socket.id });
+    });
+
+    socket.on("answer", (data) => {
+      socket.to(data.roomId).emit("answer", { answer: data.answer, senderId: socket.id });
+    });
+
+    socket.on("ice-candidate", (data) => {
+      socket.to(data.roomId).emit("ice-candidate", { candidate: data.candidate, senderId: socket.id });
+    });
+
+    socket.on("disconnect", () => {
+      logger.info(`Socket disconnected: ${socket.id}`);
+    });
   });
 }
 
