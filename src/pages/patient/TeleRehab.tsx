@@ -12,6 +12,7 @@ export default function PatientTeleRehab() {
     isAudioMuted,
     isVideoMuted,
     isConnected,
+    mediaError,
     endCall,
     toggleAudio,
     toggleVideo,
@@ -23,6 +24,13 @@ export default function PatientTeleRehab() {
         <h1 className="text-3xl font-bold tracking-tight">{language === 'en' ? 'Tele-Rehab Consultation' : 'টেলি-রিহ্যাব পরামর্শ'}</h1>
         <p className="text-muted-foreground">{language === 'en' ? 'Connect with your doctor for a guided session.' : 'একটি নির্দেশিত সেশনের জন্য আপনার ডাক্তারের সাথে সংযুক্ত হন।'}</p>
       </div>
+
+      {mediaError && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg font-medium shadow-sm border border-red-100 flex items-center gap-3">
+          <PhoneOff className="w-5 h-5 shrink-0" />
+          <span>Device Error: {mediaError}. Please allow camera/microphone permissions.</span>
+        </div>
+      )}
 
       <Card className="overflow-hidden bg-slate-900 border-0 flex flex-col relative aspect-video shadow-2xl">
         <div className="flex-1 flex justify-center items-center relative overflow-hidden">

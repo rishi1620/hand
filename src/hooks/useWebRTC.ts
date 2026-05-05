@@ -14,6 +14,7 @@ export function useWebRTC(roomId: string) {
   const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [mediaError, setMediaError] = useState<string | null>(null);
 
   const localVideoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
@@ -40,12 +41,17 @@ export function useWebRTC(roomId: string) {
     // Get local media
     const initMedia = async () => {
       try {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error("Media devices API not available");
+        }
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         setLocalStream(stream);
+        setMediaError(null);
 
         socketRef.current?.emit('join-room', roomId);
       } catch (err) {
         console.error("Failed to get local media", err);
+        setMediaError(err instanceof Error ? err.message : "Permission denied or no devices available");
       }
     };
 
@@ -180,6 +186,7 @@ export function useWebRTC(roomId: string) {
     isAudioMuted,
     isVideoMuted,
     isConnected,
+    mediaError,
     startCall,
     endCall,
     toggleAudio,

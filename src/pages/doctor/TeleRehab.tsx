@@ -10,6 +10,7 @@ export default function DoctorTeleRehab() {
     isAudioMuted,
     isVideoMuted,
     isConnected,
+    mediaError,
     startCall,
     endCall,
     toggleAudio,
@@ -22,6 +23,13 @@ export default function DoctorTeleRehab() {
         <h1 className="text-3xl font-bold tracking-tight">Tele-Rehab Consultation</h1>
         <p className="text-muted-foreground">Conduct remote video consultations with your patients.</p>
       </div>
+
+      {mediaError && (
+        <div className="bg-red-50 text-red-600 p-4 rounded-lg font-medium shadow-sm border border-red-100 flex items-center gap-3">
+          <PhoneOff className="w-5 h-5 shrink-0" />
+          <span>Device Error: {mediaError}. Please allow camera/microphone permissions.</span>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
