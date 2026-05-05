@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
-  "requestFramePermissions": [],
+  "name": "HandRehab Pro",
+  "description": "Industrial robotic hand rehabilitation platform.",
+  "requestFramePermissions": ["camera", "microphone"],
   "majorCapabilities": []
 }

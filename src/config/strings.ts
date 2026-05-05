@@ -6,6 +6,9 @@ export const AppStrings = {
     Description: "Empowering recovery with remote-controlled robotic rehabilitation, precise tracking, and expert doctor supervision.",
     DoctorLoginBtn: "Doctor Login",
     PatientLoginBtn: "Patient Login",
+    PhysioLoginBtn: "Physio Login",
+    AdminLoginBtn: "Admin Login",
+    BookDemoBtn: "Book a Demo",
   
     // Patient Management
     PatientsTitle: "My Patients",
@@ -68,6 +71,9 @@ export const AppStrings = {
     Description: "রিমোট-নিয়ন্ত্রিত রোবোটিক পুনর্বাসন, নিখুঁত ট্র্যাকিং এবং বিশেষজ্ঞ ডাক্তারের তত্ত্বাবধানে আরোগ্য লাভ করুন।",
     DoctorLoginBtn: "ডাক্তার লগইন",
     PatientLoginBtn: "রোগী লগইন",
+    PhysioLoginBtn: "ফিজিও লগইন",
+    AdminLoginBtn: "অ্যাডমিন লগইন",
+    BookDemoBtn: "ডেমো বুক করুন",
   
     PatientsTitle: "আমার রোগীরা",
     AddPatientBtn: "+ রোগী যোগ করুন",

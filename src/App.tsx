@@ -7,6 +7,12 @@ import {
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import LandingPage from "./pages/LandingPage";
 import NotFound from "./pages/NotFound";
+
+import Contact from "./pages/public/Contact";
+import Privacy from "./pages/public/Privacy";
+import Terms from "./pages/public/Terms";
+import Login from "./pages/public/Login";
+
 import DoctorLayout from "./pages/doctor/Layout";
 import DoctorDashboard from "./pages/doctor/Dashboard";
 import DoctorPatients from "./pages/doctor/Patients";
@@ -25,12 +31,22 @@ import PatientTeleRehab from "./pages/patient/TeleRehab";
 import PatientGames from "./pages/patient/Games";
 import PatientProfile from "./pages/patient/Profile";
 
+import PhysioLayout from "./pages/physio/Layout";
+import PhysioDashboard from "./pages/physio/Dashboard";
+
+import AdminLayout from "./pages/admin/Layout";
+import AdminDashboard from "./pages/admin/Dashboard";
+
 export default function App() {
   return (
     <ErrorBoundary>
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/login/:role" element={<Login />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
 
           {/* Doctor Routes */}
           <Route path="/doctor" element={<DoctorLayout />}>
@@ -54,6 +70,24 @@ export default function App() {
             <Route path="tele-rehab" element={<PatientTeleRehab />} />
             <Route path="games" element={<PatientGames />} />
             <Route path="profile" element={<PatientProfile />} />
+          </Route>
+
+          {/* Physio Routes */}
+          <Route path="/physio" element={<PhysioLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<PhysioDashboard />} />
+            <Route path="patients" element={<PhysioDashboard />} />
+            <Route path="session" element={<PhysioDashboard />} />
+            <Route path="reports" element={<PhysioDashboard />} />
+          </Route>
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="users" element={<AdminDashboard />} />
+            <Route path="audit" element={<AdminDashboard />} />
+            <Route path="settings" element={<AdminDashboard />} />
           </Route>
 
           {/* Fallback 404 Route */}

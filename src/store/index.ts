@@ -3,7 +3,7 @@ import { create } from 'zustand';
 export interface User {
   id: string;
   name: string;
-  role: 'doctor' | 'patient';
+  role: 'doctor' | 'patient' | 'physiotherapist' | 'admin';
   email: string;
 }
 
