@@ -21,7 +21,7 @@ export default function LandingPage() {
   };
 
   const handlePatientLogin = () => {
-    setLogin({ id: "pt-1", name: "John Doe", role: "patient", email: "john@example.com" });
+    setLogin({ id: "1", name: "John Doe", role: "patient", email: "john@example.com" });
     navigate("/patient/dashboard");
   };
 

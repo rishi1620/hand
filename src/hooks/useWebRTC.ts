@@ -50,8 +50,50 @@ export function useWebRTC(roomId: string) {
 
         socketRef.current?.emit('join-room', roomId);
       } catch (err) {
-        console.error("Failed to get local media", err);
+        // Suppress console error to avoid alarm in iframe preview
+        // console.error("Failed to get local media", err);
         setMediaError(err instanceof Error ? err.message : "Permission denied or no devices available");
+        
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 640;
+          canvas.height = 480;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#94a3b8';
+            ctx.font = '24px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('No Camera Access', canvas.width / 2, canvas.height / 2);
+            setInterval(() => {
+              ctx.fillStyle = '#1e293b';
+              ctx.fillRect(0, 0, canvas.width, canvas.height);
+              ctx.fillStyle = '#94a3b8';
+              ctx.fillText('No Camera Access', canvas.width / 2, canvas.height / 2);
+              ctx.fillText(new Date().toLocaleTimeString(), canvas.width / 2, canvas.height / 2 + 40);
+            }, 1000);
+          }
+          const videoStream = canvas.captureStream(30);
+          
+          // Try to create mock audio, might fail if audio context is not allowed
+          let audioStream = new MediaStream();
+          try {
+             // @ts-ignore
+             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+             const dest = audioCtx.createMediaStreamDestination();
+             audioStream = dest.stream;
+          } catch(e) {}
+
+          const mockStream = new MediaStream([
+            ...videoStream.getVideoTracks(),
+            ...audioStream.getAudioTracks()
+          ]);
+          setLocalStream(mockStream);
+          socketRef.current?.emit('join-room', roomId);
+        } catch (mockErr) {
+          console.error("Failed to generate mock stream", mockErr);
+        }
       }
     };
 

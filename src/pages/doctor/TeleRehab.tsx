@@ -25,9 +25,22 @@ export default function DoctorTeleRehab() {
       </div>
 
       {mediaError && (
-        <div className="bg-red-50 text-red-600 p-4 rounded-lg font-medium shadow-sm border border-red-100 flex items-center gap-3">
-          <PhoneOff className="w-5 h-5 shrink-0" />
-          <span>Device Error: {mediaError}. Please allow camera/microphone permissions.</span>
+        <div className="bg-amber-50 text-amber-700 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4 border border-amber-200">
+          <div className="flex items-center gap-3">
+            <PhoneOff className="w-5 h-5 shrink-0 text-amber-500" />
+            <p className="text-sm font-medium">
+              {language === 'en' 
+                ? 'Camera/microphone access was denied. This often happens in preview mode. We are using a mock stream for now.' 
+                : 'ক্যামেরা/মাইক্রোফোন অ্যাক্সেস অস্বীকার করা হয়েছে। এটি সাধারণত প্রিভিউ মোডে ঘটে। আমরা আপাতত একটি মক স্ট্রিম ব্যবহার করছি।'}
+            </p>
+          </div>
+          <Button 
+            variant="outline" 
+            className="bg-white hover:bg-amber-100 text-amber-700 border-amber-300 w-full sm:w-auto shrink-0"
+            onClick={() => window.open(window.location.href, '_blank')}
+          >
+            {language === 'en' ? 'Open in New Tab' : 'নতুন ট্যাবে খুলুন'}
+          </Button>
         </div>
       )}
 
