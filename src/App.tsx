@@ -11,7 +11,6 @@ import NotFound from "./pages/NotFound";
 import Contact from "./pages/public/Contact";
 import Privacy from "./pages/public/Privacy";
 import Terms from "./pages/public/Terms";
-import Login from "./pages/public/Login";
 
 import DoctorLayout from "./pages/doctor/Layout";
 import DoctorDashboard from "./pages/doctor/Dashboard";
@@ -43,7 +42,6 @@ export default function App() {
       <Router>
         <Routes>
           <Route path="/" element={<LandingPage />} />
-          <Route path="/login/:role" element={<Login />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />

@@ -16,19 +16,23 @@ export default function LandingPage() {
 
   // Auth simulators
   const handleDoctorLogin = () => {
-    navigate("/login/doctor");
+    setLogin({ id: "doc-1", name: "Dr. Emily Chen", role: "doctor", email: "doc@handrehab.pro" });
+    navigate("/doctor/dashboard");
   };
 
   const handlePatientLogin = () => {
-    navigate("/login/patient");
+    setLogin({ id: "pt-1", name: "John Doe", role: "patient", email: "john@example.com" });
+    navigate("/patient/dashboard");
   };
 
   const handlePhysioLogin = () => {
-    navigate("/login/physiotherapist");
+    setLogin({ id: "physio-1", name: "Sarah Jenkins, PT", role: "physiotherapist", email: "sarah@handrehab.pro" });
+    navigate("/physio/dashboard");
   };
 
   const handleAdminLogin = () => {
-    navigate("/login/admin");
+    setLogin({ id: "admin-1", name: "System Admin", role: "admin", email: "admin@handrehab.pro" });
+    navigate("/admin/dashboard");
   };
 
   return (
