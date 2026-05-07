@@ -2,8 +2,10 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/compon
 import { Button } from "@/components/ui/button";
 import { Video, Mic, MicOff, VideoOff, PhoneOff, MonitorUp, PhoneCall } from "lucide-react";
 import { useWebRTC } from "@/hooks/useWebRTC";
+import { useStore } from "@/store";
 
 export default function DoctorTeleRehab() {
+  const { language } = useStore();
   const {
     localVideoRef,
     remoteVideoRef,
