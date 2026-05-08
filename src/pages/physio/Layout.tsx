@@ -1,6 +1,6 @@
 import { Outlet, NavLink, useNavigate, Navigate } from 'react-router-dom';
 import { useStore } from '@/store';
-import { LayoutDashboard, Users, Activity, FileBarChart, LogOut, Globe } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, FileBarChart, LogOut, Globe, Calendar, Video, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -14,9 +14,12 @@ export default function PhysioLayout() {
 
   const navItems = [
     { to: '/physio/dashboard', icon: LayoutDashboard, label: language === 'bn' ? 'ড্যাশবোর্ড' : 'Dashboard' },
-    { to: '/physio/patients', icon: Users, label: language === 'bn' ? 'অর্পণ করা রোগী' : 'Assigned Patients' },
-    { to: '/physio/session', icon: Activity, label: language === 'bn' ? 'থেরাপি সেশন' : 'Therapy Session' },
+    { to: '/physio/patients', icon: Users, label: language === 'bn' ? 'রোগীরা' : 'Patients' },
+    { to: '/physio/session', icon: Activity, label: language === 'bn' ? 'লাইভ সেশন' : 'Live Session' },
     { to: '/physio/reports', icon: FileBarChart, label: language === 'bn' ? 'রিপোর্ট' : 'Reports' },
+    { to: '/physio/scheduler', icon: Calendar, label: language === 'bn' ? 'শিডিউলার' : 'Scheduler' },
+    { to: '/physio/tele-rehab', icon: Video, label: language === 'bn' ? 'টেলি-রিহ্যাব' : 'Tele-Rehab' },
+    { to: '/physio/settings', icon: Settings, label: language === 'bn' ? 'সেটিংস' : 'Settings' },
   ];
 
   return (

@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 
+import { Assessment } from '../types/clinical';
+
 export interface User {
   id: string;
   name: string;
@@ -50,6 +52,7 @@ interface AppState {
   setLanguage: (lang: 'en' | 'bn') => void;
   currentUser: User | null;
   patients: PatientRecord[];
+  assessments: Assessment[];
   activePatientId: string | null;
   pairingDevice: boolean;
   pairingStatus: string;
@@ -72,6 +75,7 @@ interface AppState {
   logout: () => void;
   setActivePatient: (id: string | null) => void;
   updatePatient: (id: string, data: Partial<PatientRecord>) => void;
+  addAssessment: (assessment: Assessment) => void;
   setDeviceUrl: (url: string) => void;
   connectDevice: () => Promise<void>;
   disconnectDevice: () => void;
@@ -89,11 +93,39 @@ const mockPatients: PatientRecord[] = [
   { id: '2', name: 'Sarah Smith', age: 32, diagnosis: 'Carpal Tunnel Syndrome (Post-op)', assignedDeviceId: null, complianceScore: 92, lastSessionDate: '2023-10-25', progressStage: 'Phase 1', contact: 'sarah@example.com', emergencyContact: 'Mike Smith (Husband): 555-0101' },
 ];
 
+const mockAssessments: Assessment[] = [
+  {
+    id: 'a1',
+    patientId: '1',
+    type: 'Barthel Index',
+    date: '2023-10-24',
+    assessorId: 'physio-1',
+    assessorName: 'Sarah Jenkins, PT',
+    totalScore: 65,
+    interpretation: 'Moderate dependence',
+    clinicalNotes: 'Patient can transfer somewhat independently and handle stairs with handrail.',
+    recommendedPlan: 'Focus on independent dressing and grooming.',
+    details: {
+      feeding: 10,
+      bathing: 0,
+      grooming: 5,
+      dressing: 5,
+      bowels: 10,
+      bladder: 10,
+      toiletUse: 5,
+      transfers: 15,
+      mobility: 10,
+      stairs: 5
+    }
+  }
+];
+
 export const useStore = create<AppState>((set, get) => ({
   language: 'en',
   setLanguage: (lang) => set({ language: lang }),
   currentUser: null,
   patients: mockPatients,
+  assessments: mockAssessments,
   activePatientId: null,
   pairingDevice: false,
   pairingStatus: '',
@@ -106,6 +138,9 @@ export const useStore = create<AppState>((set, get) => ({
   setActivePatient: (id) => set({ activePatientId: id }),
   updatePatient: (id, data) => set(state => ({
     patients: state.patients.map(p => p.id === id ? { ...p, ...data } : p)
+  })),
+  addAssessment: (assessment) => set(state => ({
+    assessments: [...state.assessments, assessment]
   })),
   setDeviceUrl: (url) => set({ deviceUrl: url }),
 

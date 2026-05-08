@@ -141,6 +141,67 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Healthcare Impact and Business Value */}
+      <section className="py-24 bg-white border-y">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid md:grid-cols-2 gap-16">
+            
+            {/* Healthcare POV */}
+            <div className="space-y-6">
+              <div className="text-emerald-600 font-bold tracking-widest uppercase text-sm">{language === 'en' ? 'Clinical Assessment' : 'ক্লিনিকাল মূল্যায়ন'}</div>
+              <h2 className="text-3xl font-bold text-slate-900">{language === 'en' ? 'Healthcare Impact' : 'স্বাস্থ্যসেবার প্রভাব'}</h2>
+              <p className="text-lg text-slate-600 leading-relaxed text-justify">
+                {language === 'en' 
+                  ? 'HandRehab Pro helps healthcare providers move from simple exercise tracking to evidence-based rehabilitation monitoring. By combining robotic hand therapy data with standardized clinical outcome measures, physiotherapists and doctors can evaluate both physical performance and real-life functional recovery.'
+                  : 'হ্যান্ডরিহ্যাব প্রো স্বাস্থ্য পরিষেবা প্রদানকারীদের সাধারণ ব্যায়াম ট্র্যাকিং থেকে প্রমাণ-ভিত্তিক পুনর্বাসন পর্যবেক্ষণে যেতে সাহায্য করে। রোবোটিক হ্যান্ড থেরাপির ডেটাকে প্রমিত ক্লিনিকাল ফলাফলের ব্যবস্থাগুলির সাথে একত্রিত করে, ফিজিওথেরাপিস্ট এবং ডাক্তাররা শারীরিক কর্মক্ষমতা এবং বাস্তব জীবনের কার্যকরী পুনরুদ্ধার উভয়ই মূল্যায়ন করতে পারেন।'
+                }
+              </p>
+              <ul className="space-y-3 pt-4">
+                {[
+                  'Measures functional independence using Barthel Index',
+                  'Tracks balance and fall risk using Berg Balance Scale',
+                  'Monitors spasticity and muscle tone using Modified Ashworth Scale',
+                  'Supports personalized therapy planning',
+                  'Helps clinicians identify patient deterioration early',
+                  'Creates objective progress records for clinics and hospitals'
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-slate-700">
+                     <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" /> <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Business POV */}
+            <div className="space-y-6">
+              <div className="text-indigo-600 font-bold tracking-widest uppercase text-sm">{language === 'en' ? 'Enterprise Solution' : 'এন্টারপ্রাইজ সমাধান'}</div>
+              <h2 className="text-3xl font-bold text-slate-900">{language === 'en' ? 'Business Value' : 'ব্যবসায়িক মান'}</h2>
+              <p className="text-lg text-slate-600 leading-relaxed text-justify">
+                {language === 'en' 
+                  ? 'The Clinical Assessment Module makes HandRehab Pro more valuable for physiotherapy centers, rehabilitation clinics, hospitals, and home-care providers. Instead of being only a robotic rehabilitation device interface, the platform becomes a complete rehabilitation management and outcome-tracking solution.'
+                  : 'ক্লিনিকাল অ্যাসেসমেন্ট মডিউল হ্যান্ডরিহ্যাব প্রোকে ফিজিওথেরাপি কেন্দ্র, পুনর্বাসন ক্লিনিক, হাসপাতাল এবং হোম-কেয়ার প্রদানকারীদের জন্য আরও মূল্যবান করে তোলে। শুধুমাত্র একটি রোবোটিক পুনর্বাসন ডিভাইস ইন্টারফেস হওয়ার পরিবর্তে, প্ল্যাটফর্মটি একটি সম্পূর্ণ পুনর্বাসন ব্যবস্থাপনা এবং ফলাফল-ট্র্যাকিং সমাধানে পরিণত হয়।'
+                }
+              </p>
+              <ul className="space-y-3 pt-4">
+                {[
+                  'Makes the product more clinic-ready for B2B sales',
+                  'Increases trust among hospitals and physiotherapy centers',
+                  'Supports premium analytics and reporting features',
+                  'Enables subscription-based clinical documentation',
+                  'Improves patient retention through visible progress tracking',
+                  'Helps clinics generate professional reports for patients and doctors'
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-slate-700">
+                     <CheckCircle2 className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" /> <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* Roles Section */}
       <section className="py-32 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">

@@ -32,6 +32,9 @@ import PatientProfile from "./pages/patient/Profile";
 
 import PhysioLayout from "./pages/physio/Layout";
 import PhysioDashboard from "./pages/physio/Dashboard";
+import PhysioPatientList from "./pages/physio/PatientList";
+import PhysioPatientProfile from "./pages/physio/PatientProfile";
+import PhysioNewAssessment from "./pages/physio/NewAssessment";
 
 import AdminLayout from "./pages/admin/Layout";
 import AdminDashboard from "./pages/admin/Dashboard";
@@ -74,9 +77,14 @@ export default function App() {
           <Route path="/physio" element={<PhysioLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<PhysioDashboard />} />
-            <Route path="patients" element={<PhysioDashboard />} />
+            <Route path="patients" element={<PhysioPatientList />} />
+            <Route path="patients/:id" element={<PhysioPatientProfile />} />
+            <Route path="patients/:id/new-assessment" element={<PhysioNewAssessment />} />
             <Route path="session" element={<PhysioDashboard />} />
             <Route path="reports" element={<PhysioDashboard />} />
+            <Route path="scheduler" element={<PhysioDashboard />} />
+            <Route path="tele-rehab" element={<DoctorTeleRehab />} />
+            <Route path="settings" element={<PhysioDashboard />} />
           </Route>
 
           {/* Admin Routes */}
