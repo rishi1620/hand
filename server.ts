@@ -73,7 +73,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Vite Middleware & Static Generation 
 // Note: We mount Vite middleware after API routes so Vite handles standard assets
 async function startServer() {
-  const PORT = process.env.PORT || 3000;
+  const PORT = 3000;
 
   if (process.env.NODE_ENV !== "production") {
     const { createServer: createViteServer } = await import("vite");
@@ -94,7 +94,7 @@ async function startServer() {
     });
   }
 
-  const httpServer = app.listen(PORT, () => {
+  const httpServer = app.listen(PORT, "0.0.0.0", () => {
     logger.info(`Server running on http://0.0.0.0:${PORT}`);
   });
 
