@@ -18,9 +18,7 @@ export const logger = pino({
 export const app = express();
 
 // Security middlewares
-app.use(helmet({
-  contentSecurityPolicy: false, // Disabled for Vite Dev Server compatibility
-}));
+// Helmet is disabled to prevent iframe embedding issues in the preview environment
 app.use(cors());
 
 // Body parsers
