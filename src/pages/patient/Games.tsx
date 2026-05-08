@@ -243,12 +243,12 @@ export default function PatientGames() {
              <Trophy className="w-14 h-14 text-white z-10" />
           </div>
           <CardHeader>
-            <CardTitle className="text-xl">Grip & Catch</CardTitle>
-            <CardDescription className="text-base leading-relaxed">Squeeze to catch falling objects. Adapts target force dynamically based on your grip strength.</CardDescription>
+            <CardTitle className="text-xl">{language === 'en' ? 'Grip & Catch' : 'গ্রিপ এবং ক্যাচ'}</CardTitle>
+            <CardDescription className="text-base leading-relaxed">{language === 'en' ? 'Squeeze to catch falling objects. Adapts target force dynamically based on your grip strength.' : 'পতনশীল বস্তু ধরতে স্কুইজ করুন। আপনার গ্রিপ শক্তির উপর ভিত্তি করে লক্ষ্য শক্তি গতিশীলভাবে মানিয়ে নেয়।'}</CardDescription>
           </CardHeader>
           <CardContent className="mt-auto">
              <Button className="w-full h-14 text-lg bg-blue-600 hover:bg-blue-700" onClick={() => startGame('grip')}>
-               <PlayCircle className="w-5 h-5 mr-2" /> Play Adaptive Session
+               <PlayCircle className="w-5 h-5 mr-2" /> {language === 'en' ? 'Play Adaptive Session' : 'অ্যাডাপ্টিভ সেশন খেলুন'}
              </Button>
           </CardContent>
         </Card>
@@ -259,12 +259,12 @@ export default function PatientGames() {
              <Target className="w-14 h-14 text-white z-10" />
           </div>
           <CardHeader>
-            <CardTitle className="text-xl">Steady Spaceship</CardTitle>
-            <CardDescription className="text-base leading-relaxed">Maintain stable force to navigate the ship. Prevents extreme flexions and trains muscle endurance.</CardDescription>
+            <CardTitle className="text-xl">{language === 'en' ? 'Steady Spaceship' : 'স্টেডি স্পেসশিপ'}</CardTitle>
+            <CardDescription className="text-base leading-relaxed">{language === 'en' ? 'Maintain stable force to navigate the ship. Prevents extreme flexions and trains muscle endurance.' : 'জাহাজ নেভিগেট করতে স্থিতিশীল শক্তি বজায় রাখুন। চরম ফ্লেক্সন প্রতিরোধ করে এবং পেশী সহনশীলতা প্রশিক্ষণ দেয়।'}</CardDescription>
           </CardHeader>
           <CardContent className="mt-auto">
              <Button className="w-full h-14 text-lg bg-emerald-600 hover:bg-emerald-700" onClick={() => startGame('steady')}>
-               <PlayCircle className="w-5 h-5 mr-2" /> Play Adaptive Session
+               <PlayCircle className="w-5 h-5 mr-2" /> {language === 'en' ? 'Play Adaptive Session' : 'অ্যাডাপ্টিভ সেশন খেলুন'}
              </Button>
           </CardContent>
         </Card>
@@ -273,8 +273,8 @@ export default function PatientGames() {
            <div className="bg-slate-200 p-4 rounded-full mb-4">
               <Award className="w-8 h-8 text-slate-400" />
            </div>
-           <p className="font-bold text-slate-500 mb-1">Rhythm Flex</p>
-           <p className="text-sm text-slate-400 text-center px-6">Unlocks at Mid-Stage Phase 2</p>
+           <p className="font-bold text-slate-500 mb-1">{language === 'en' ? 'Rhythm Flex' : 'রিদম ফ্লেক্স'}</p>
+           <p className="text-sm text-slate-400 text-center px-6">{language === 'en' ? 'Unlocks at Mid-Stage Phase 2' : 'মিড-স্টেজ ফেজ 2 এ আনলক হবে'}</p>
         </Card>
       </div>
 
@@ -284,20 +284,22 @@ export default function PatientGames() {
           {sessionPaused === 'overexertion' && (
             <div className="absolute inset-0 bg-red-900/95 z-50 flex items-center justify-center flex-col text-white p-8 text-center animate-in fade-in">
               <ShieldAlert className="w-20 h-20 mb-6 text-red-400" />
-              <h2 className="text-3xl font-bold mb-4">Safety Pause Triggered</h2>
-              <p className="text-xl text-red-100 mb-8 max-w-lg">Maximum safe force exceeded ({gripForce}N &gt; {PATIENT_PROFILE.maxSafeForce}N). We've paused the game to prevent strain.</p>
-              <Button size="lg" variant="secondary" className="h-14 px-8 text-lg" onClick={closeGame}>Exit Session & Rest</Button>
+              <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Safety Pause Triggered' : 'নিরাপত্তা বিরতি ট্রিগার করা হয়েছে'}</h2>
+              <p className="text-xl text-red-100 mb-8 max-w-lg">
+                 {language === 'en' ? `Maximum safe force exceeded (${localizeNumber(gripForce, language)}N > ${localizeNumber(PATIENT_PROFILE.maxSafeForce, language)}N). We've paused the game to prevent strain.` : `সর্বাধিক নিরাপদ শক্তি অতিক্রম করেছে (${localizeNumber(gripForce, language)}N > ${localizeNumber(PATIENT_PROFILE.maxSafeForce, language)}N)। আমরা স্ট্রেইন রোধ করতে খেলা বিরতি দিয়েছি।`}
+              </p>
+              <Button size="lg" variant="secondary" className="h-14 px-8 text-lg" onClick={closeGame}>{language === 'en' ? 'Exit Session & Rest' : 'সেশন থেকে প্রস্থান করুন এবং বিশ্রাম নিন'}</Button>
             </div>
           )}
 
           {sessionPaused === 'fatigue' && (
             <div className="absolute inset-0 bg-amber-900/95 z-50 flex items-center justify-center flex-col text-white p-8 text-center animate-in fade-in">
               <Battery className="w-20 h-20 mb-6 text-amber-400" />
-              <h2 className="text-3xl font-bold mb-4">Fatigue Detected</h2>
-              <p className="text-xl text-amber-100 mb-8 max-w-lg">We noticed your force output dropping or staying low. We recommend taking a break. The game intensity has been reduced for when you resume.</p>
+              <h2 className="text-3xl font-bold mb-4">{language === 'en' ? 'Fatigue Detected' : 'ক্লান্তি শনাক্ত হয়েছে'}</h2>
+              <p className="text-xl text-amber-100 mb-8 max-w-lg">{language === 'en' ? `We noticed your force output dropping or staying low. We recommend taking a break. The game intensity has been reduced for when you resume.` : `আমরা লক্ষ্য করেছি আপনার শক্তি আউটপুট কমে যাচ্ছে বা কম থাকছে। আমরা একটি বিরতি নেওয়ার পরামর্শ দিই। আপনি যখন আবার শুরু করবেন তার জন্য গেমের তীব্রতা কমানো হয়েছে।`}</p>
               <div className="flex gap-4">
-                 <Button size="lg" variant="secondary" className="h-14 px-8 text-lg text-slate-800" onClick={closeGame}>Exit Session & Rest</Button>
-                 <Button size="lg" className="h-14 px-8 text-lg bg-amber-600 hover:bg-amber-500" onClick={() => { setSessionPaused(null); setIsPlaying(true); }}>Resume (Lower Intensity)</Button>
+                 <Button size="lg" variant="secondary" className="h-14 px-8 text-lg text-slate-800" onClick={closeGame}>{language === 'en' ? 'Exit Session & Rest' : 'সেশন থেকে প্রস্থান করুন এবং বিশ্রাম নিন'}</Button>
+                 <Button size="lg" className="h-14 px-8 text-lg bg-amber-600 hover:bg-amber-500" onClick={() => { setSessionPaused(null); setIsPlaying(true); }}>{language === 'en' ? 'Resume (Lower Intensity)' : 'পুনরায় শুরু করুন (কম তীব্রতা)'}</Button>
               </div>
             </div>
           )}
@@ -306,29 +308,29 @@ export default function PatientGames() {
             <div className="flex justify-between items-start mb-8">
               <div>
                 <DialogTitle className="text-2xl font-bold text-white mb-2">
-                  {activeGame === 'grip' ? 'Grip & Catch' : 'Steady Spaceship'}
+                  {activeGame === 'grip' ? (language === 'en' ? 'Grip & Catch' : 'গ্রিপ এবং ক্যাচ') : (language === 'en' ? 'Steady Spaceship' : 'স্টেডি স্পেসশিপ')}
                 </DialogTitle>
                 <div className="flex items-center gap-3">
                    <span className="bg-blue-500/20 text-blue-300 py-1 px-3 rounded-full text-sm font-semibold border border-blue-500/30">
-                     Adaptive Level {difficultyParams.level}
+                     {language === 'en' ? 'Adaptive Level' : 'অ্যাডাপ্টিভ লেভেল'} {localizeNumber(difficultyParams.level, language)}
                    </span>
                    {fatigueWarning && (
                      <span className="bg-yellow-500/20 text-yellow-300 py-1 px-3 rounded-full text-sm font-semibold border border-yellow-500/30 flex items-center gap-1 animate-pulse">
-                       <Battery className="w-4 h-4" /> Fatigue detected - lowering intensity
+                       <Battery className="w-4 h-4" /> {language === 'en' ? 'Fatigue detected - lowering intensity' : 'ক্লান্তি শনাক্ত - তীব্রতা কমানো হচ্ছে'}
                      </span>
                    )}
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-4xl font-black tabular-nums text-emerald-400">{score}</div>
-                <div className="text-slate-400 font-medium uppercase text-xs tracking-wider">Score</div>
+                <div className="text-4xl font-black tabular-nums text-emerald-400">{localizeNumber(score, language)}</div>
+                <div className="text-slate-400 font-medium uppercase text-xs tracking-wider">{language === 'en' ? 'Score' : 'স্কোর'}</div>
               </div>
             </div>
             
             {/* Main Game Stage */}
             <div className="bg-slate-800 rounded-2xl p-6 border border-slate-700 shadow-inner mb-6 relative">
               <div className="absolute top-4 right-6 text-2xl font-bold tabular-nums text-slate-300">
-                0:{timeLeft.toString().padStart(2, '0')}
+                0:{localizeNumber(timeLeft.toString().padStart(2, '0'), language)}
               </div>
 
               {/* Patient Insight Graph */}
@@ -342,10 +344,10 @@ export default function PatientGames() {
               </div>
 
               <div className="space-y-4">
-                <div className="flex justify-between text-sm font-bold text-slate-400">
-                   <span>Force Output</span>
-                   <span className="tabular-nums">{Math.round(gripForce)} N / {PATIENT_PROFILE.maxSafeForce} N</span>
-                </div>
+                 <div className="flex justify-between text-sm font-bold text-slate-400">
+                    <span>{language === 'en' ? 'Force Output' : 'বল আউটপুট'}</span>
+                    <span className="tabular-nums">{localizeNumber(Math.round(gripForce), language)} {language === 'en' ? 'N' : 'নি.'} / {localizeNumber(PATIENT_PROFILE.maxSafeForce, language)} {language === 'en' ? 'N' : 'নি.'}</span>
+                 </div>
                 
                 {/* 9. Accessibility Enhancements: Large simple progress visual */}
                 <div className="h-16 bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-slate-700">
@@ -396,13 +398,13 @@ export default function PatientGames() {
                  }}
               >
                 <Keyboard className="mr-3 h-8 w-8 text-slate-400" />
-                TAP OR PRESS SPACE TO SQUEEZE
+                {language === 'en' ? 'TAP OR PRESS SPACE TO SQUEEZE' : 'স্কুইজ করতে ট্যাপ করুন বা স্পেস চাপুন'}
               </Button>
             ) : (
               <div className="flex gap-4">
-                <Button variant="secondary" className="flex-1 h-16 text-lg bg-slate-700 hover:bg-slate-600 text-white border-0" onClick={closeGame}>Exit Game</Button>
+                <Button variant="secondary" className="flex-1 h-16 text-lg bg-slate-700 hover:bg-slate-600 text-white border-0" onClick={closeGame}>{language === 'en' ? 'Exit Game' : 'গেম থেকে প্রস্থান করুন'}</Button>
                 <Button className="flex-1 h-16 text-lg bg-indigo-600 hover:bg-indigo-500" onClick={() => startGame(activeGame!)}>
-                  Play Again <ArrowRight className="ml-2 w-5 h-5" />
+                  {language === 'en' ? 'Play Again' : 'আবার খেলুন'} <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </div>
             )}

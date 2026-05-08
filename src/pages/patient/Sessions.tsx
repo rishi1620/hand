@@ -2,31 +2,34 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { PlayCircle, Clock, Calendar, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useStore } from '@/store';
+import { localizeNumber } from '@/lib/utils';
 
 export default function PatientSessions() {
    const navigate = useNavigate();
+   const { language } = useStore();
 
    const upcoming = [
-      { date: 'Today', time: '10:00 AM', duration: '15 min', intensity: 'Moderate' },
-      { date: 'Tomorrow', time: '02:00 PM', duration: '20 min', intensity: 'Intensive' },
+      { date: language === 'en' ? 'Today' : 'আজ', time: language === 'en' ? '10:00 AM' : 'সকাল ১০:০০', duration: language === 'en' ? '15 min' : '১৫ মিনিট', intensity: language === 'en' ? 'Moderate' : 'মাঝারি' },
+      { date: language === 'en' ? 'Tomorrow' : 'আগামীকাল', time: language === 'en' ? '02:00 PM' : 'দুপুর ০২:০০', duration: language === 'en' ? '20 min' : '২০ মিনিট', intensity: language === 'en' ? 'Intensive' : 'তীব্র' },
    ];
 
    const history = [
-      { date: 'Yesterday', time: '11:00 AM', duration: '15 min', score: 95 },
-      { date: 'Oct 25', time: '09:30 AM', duration: '15 min', score: 88 },
-      { date: 'Oct 24', time: '10:15 AM', duration: '10 min', score: 100 },
-      { date: 'Oct 22', time: '04:00 PM', duration: '20 min', score: 92 },
+      { date: language === 'en' ? 'Yesterday' : 'গতকাল', time: language === 'en' ? '11:00 AM' : 'সকাল ১১:০০', duration: language === 'en' ? '15 min' : '১৫ মিনিট', score: 95 },
+      { date: language === 'en' ? 'Oct 25' : '২৫ অক্টো', time: language === 'en' ? '09:30 AM' : 'সকাল ০৯:৩০', duration: language === 'en' ? '15 min' : '১৫ মিনিট', score: 88 },
+      { date: language === 'en' ? 'Oct 24' : '২৪ অক্টো', time: language === 'en' ? '10:15 AM' : 'সকাল ১০:১৫', duration: language === 'en' ? '10 min' : '১০ মিনিট', score: 100 },
+      { date: language === 'en' ? 'Oct 22' : '২২ অক্টো', time: language === 'en' ? '04:00 PM' : 'বিকাল ০৪:০০', duration: language === 'en' ? '20 min' : '২০ মিনিট', score: 92 },
    ];
 
    return (
       <div className="space-y-8">
          <div>
-            <h1 className="text-3xl font-bold tracking-tight">My Sessions</h1>
-            <p className="text-muted-foreground mt-1">Manage your upcoming therapy schedule and review past sessions.</p>
+            <h1 className="text-3xl font-bold tracking-tight">{language === 'en' ? 'My Sessions' : 'আমার সেশন'}</h1>
+            <p className="text-muted-foreground mt-1">{language === 'en' ? 'Manage your upcoming therapy schedule and review past sessions.' : 'আপনার আসন্ন থেরাপি সময়সূচী পরিচালনা করুন এবং অতীত সেশন পর্যালোচনা করুন।'}</p>
          </div>
 
          <div className="space-y-4">
-            <h2 className="text-xl font-semibold border-b pb-2">Upcoming Schedule</h2>
+            <h2 className="text-xl font-semibold border-b pb-2">{language === 'en' ? 'Upcoming Schedule' : 'আসন্ন সময়সূচী'}</h2>
             <div className="grid sm:grid-cols-2 gap-4">
                {upcoming.map((session, i) => (
                   <Card key={i} className="border-l-4 border-l-primary">
@@ -42,7 +45,7 @@ export default function PatientSessions() {
                         </div>
                         {i === 0 && (
                            <Button onClick={() => navigate('/patient/live')}>
-                              <PlayCircle className="w-4 h-4 mr-2" /> Start Now
+                              <PlayCircle className="w-4 h-4 mr-2" /> {language === 'en' ? 'Start Now' : 'এখন শুরু করুন'}
                            </Button>
                         )}
                      </CardContent>
@@ -52,7 +55,7 @@ export default function PatientSessions() {
          </div>
 
          <div className="space-y-4 pt-4">
-            <h2 className="text-xl font-semibold border-b pb-2">Session History</h2>
+            <h2 className="text-xl font-semibold border-b pb-2">{language === 'en' ? 'Session History' : 'সেশনের ইতিহাস'}</h2>
             <Card>
                <div className="divide-y">
                   {history.map((session, i) => (
@@ -62,20 +65,20 @@ export default function PatientSessions() {
                               <CheckCircle2 className="w-5 h-5" />
                            </div>
                            <div>
-                              <div className="font-medium text-lg">{session.date} at {session.time}</div>
+                              <div className="font-medium text-lg">{session.date} {language === 'en' ? 'at' : 'এ'} {session.time}</div>
                               <div className="text-sm text-muted-foreground mt-1 flex gap-3">
-                                 <span>Duration: {session.duration}</span>
+                                 <span>{language === 'en' ? 'Duration:' : 'সময়কাল:'} {session.duration}</span>
                                  <span>•</span>
-                                 <span>Completed</span>
+                                 <span>{language === 'en' ? 'Completed' : 'সম্পন্ন হয়েছে'}</span>
                               </div>
                            </div>
                         </div>
                         <div className="flex items-center gap-6 sm:text-right">
                            <div>
-                              <div className="text-sm text-muted-foreground">Performance Score</div>
-                              <div className="font-bold text-xl text-emerald-600 ">{session.score}/100</div>
+                              <div className="text-sm text-muted-foreground">{language === 'en' ? 'Performance Score' : 'পারফরম্যান্স স্কোর'}</div>
+                              <div className="font-bold text-xl text-emerald-600 ">{localizeNumber(session.score, language)}/{localizeNumber(100, language)}</div>
                            </div>
-                           <Button variant="outline" size="sm">Details</Button>
+                           <Button variant="outline" size="sm">{language === 'en' ? 'Details' : 'বিবরণ'}</Button>
                         </div>
                      </div>
                   ))}

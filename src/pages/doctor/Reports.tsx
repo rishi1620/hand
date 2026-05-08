@@ -5,43 +5,45 @@ import { LineChart, Line, BarChart, Bar, RadarChart, PolarGrid, PolarAngleAxis, 
 import { Download, Activity, TrendingUp, CheckCircle2 } from 'lucide-react';
 import { useStore } from '@/store';
 
+import { localizeNumber } from '@/lib/utils';
+
 // Helper to generate deterministic mock data based on patient ID
-const generateReportData = (patientId: string) => {
+const generateReportData = (patientId: string, language: string) => {
   const seed = patientId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   
   const gripData = [
-    { date: 'Week 1', left: 10 + (seed % 5), right: 15 },
-    { date: 'Week 2', left: 12 + (seed % 6), right: 15.5 },
-    { date: 'Week 3', left: 14 + (seed % 7), right: 16 },
-    { date: 'Week 4', left: 17 + (seed % 8), right: 17 },
-    { date: 'Week 5', left: 19 + (seed % 9), right: 18.5 },
+    { date: language === 'en' ? 'Week 1' : 'সপ্তাহ ১', left: 10 + (seed % 5), right: 15 },
+    { date: language === 'en' ? 'Week 2' : 'সপ্তাহ ২', left: 12 + (seed % 6), right: 15.5 },
+    { date: language === 'en' ? 'Week 3' : 'সপ্তাহ ৩', left: 14 + (seed % 7), right: 16 },
+    { date: language === 'en' ? 'Week 4' : 'সপ্তাহ ৪', left: 17 + (seed % 8), right: 17 },
+    { date: language === 'en' ? 'Week 5' : 'সপ্তাহ ৫', left: 19 + (seed % 9), right: 18.5 },
   ];
 
   const complianceData = [
-    { day: 'Mon', target: 30, actual: 20 + (seed % 15) },
-    { day: 'Tue', target: 30, actual: 25 + (seed % 10) },
-    { day: 'Wed', target: 30, actual: 30 },
-    { day: 'Thu', target: 30, actual: 15 + (seed % 20) },
-    { day: 'Fri', target: 30, actual: (seed % 2 === 0) ? 0 : 30 },
-    { day: 'Sat', target: 30, actual: 30 + (seed % 10) },
-    { day: 'Sun', target: 30, actual: 25 + (seed % 10) },
+    { day: language === 'en' ? 'Mon' : 'সোম', target: 30, actual: 20 + (seed % 15) },
+    { day: language === 'en' ? 'Tue' : 'মঙ্গল', target: 30, actual: 25 + (seed % 10) },
+    { day: language === 'en' ? 'Wed' : 'বুধ', target: 30, actual: 30 },
+    { day: language === 'en' ? 'Thu' : 'বৃহঃ', target: 30, actual: 15 + (seed % 20) },
+    { day: language === 'en' ? 'Fri' : 'শুক্র', target: 30, actual: (seed % 2 === 0) ? 0 : 30 },
+    { day: language === 'en' ? 'Sat' : 'শনি', target: 30, actual: 30 + (seed % 10) },
+    { day: language === 'en' ? 'Sun' : 'রবি', target: 30, actual: 25 + (seed % 10) },
   ];
 
   const romData = [
-    { finger: 'Thumb', A: 30 + (seed % 30), B: 25 + (seed % 20), fullMark: 90 },
-    { finger: 'Index', A: 50 + (seed % 40), B: 40 + (seed % 30), fullMark: 90 },
-    { finger: 'Middle', A: 55 + (seed % 35), B: 45 + (seed % 25), fullMark: 90 },
-    { finger: 'Ring', A: 45 + (seed % 45), B: 35 + (seed % 35), fullMark: 90 },
-    { finger: 'Pinky', A: 40 + (seed % 30), B: 30 + (seed % 20), fullMark: 90 },
+    { finger: language === 'en' ? 'Thumb' : 'বৃদ্ধাঙ্গুলি', A: 30 + (seed % 30), B: 25 + (seed % 20), fullMark: 90 },
+    { finger: language === 'en' ? 'Index' : 'তর্জনী', A: 50 + (seed % 40), B: 40 + (seed % 30), fullMark: 90 },
+    { finger: language === 'en' ? 'Middle' : 'মধ্যমা', A: 55 + (seed % 35), B: 45 + (seed % 25), fullMark: 90 },
+    { finger: language === 'en' ? 'Ring' : 'অনামিকা', A: 45 + (seed % 45), B: 35 + (seed % 35), fullMark: 90 },
+    { finger: language === 'en' ? 'Pinky' : 'কনিষ্ঠা', A: 40 + (seed % 30), B: 30 + (seed % 20), fullMark: 90 },
   ];
 
   const currentStageIndex = 1 + (seed % 3);
   const allStages = [
-    { title: 'Initial Assessment', date: 'Oct 01, 2023', desc: 'Baseline metrics established and targets set.' },
-    { title: 'Passive ROM Recovery', date: 'Oct 15, 2023', desc: 'Regaining basic flexibility without load.' },
-    { title: 'Active Assisted', date: 'Nov 05, 2023', desc: 'Patient initiating movement with device assistance.' },
-    { title: 'Resistance Training', date: 'Est. Dec 2023', desc: 'Rebuilding force output using dynamic loads.' },
-    { title: 'Full Functional Use', date: 'Goal', desc: 'Return to unassisted daily living activities.' },
+    { title: language === 'en' ? 'Initial Assessment' : 'প্রাথমিক মূল্যায়ন', date: language === 'en' ? 'Oct 01, 2023' : '০১ অক্টো, ২০২৩', desc: language === 'en' ? 'Baseline metrics established and targets set.' : 'বেসলাইন মেট্রিক্স প্রতিষ্ঠিত এবং লক্ষ্য নির্ধারণ করা হয়েছে।' },
+    { title: language === 'en' ? 'Passive ROM Recovery' : 'প্যাসিভ ROM পুনরুদ্ধার', date: language === 'en' ? 'Oct 15, 2023' : '১৫ অক্টো, ২০২৩', desc: language === 'en' ? 'Regaining basic flexibility without load.' : 'লোড ছাড়াই মৌলিক নমনীয়তা পুনরুদ্ধার করা।' },
+    { title: language === 'en' ? 'Active Assisted' : 'সক্রিয় সহায়তা প্রাপ্ত', date: language === 'en' ? 'Nov 05, 2023' : '০৫ নভে, ২০২৩', desc: language === 'en' ? 'Patient initiating movement with device assistance.' : 'রোগী ডিভাইসের সহায়তায় আন্দোলন শুরু করছেন।' },
+    { title: language === 'en' ? 'Resistance Training' : 'প্রতিরোধ প্রশিক্ষণ', date: language === 'en' ? 'Est. Dec 2023' : 'আনুমানিক ডিসে ২০২৩', desc: language === 'en' ? 'Rebuilding force output using dynamic loads.' : 'গতিশীল লোড ব্যবহার করে ফোর্স আউটপুট পুনর্নির্মাণ।' },
+    { title: language === 'en' ? 'Full Functional Use' : 'সম্পূর্ণ কার্যকরী ব্যবহার', date: language === 'en' ? 'Goal' : 'লক্ষ্য', desc: language === 'en' ? 'Return to unassisted daily living activities.' : 'সহায়তা ছাড়াই দৈনন্দিন জীবনযাত্রার কার্যকলাপে ফিরে আসা।' },
   ];
 
   const timelineStages = allStages.map((stage, i) => ({
@@ -53,7 +55,7 @@ const generateReportData = (patientId: string) => {
 };
 
 
-const CustomTooltip = ({ active, payload, label, unit }: any) => {
+const CustomTooltip = ({ active, payload, label, unit, language }: any) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-lg">
@@ -66,7 +68,7 @@ const CustomTooltip = ({ active, payload, label, unit }: any) => {
                 <span className="font-bold text-slate-500">{entry.name}</span>
               </div>
               <span className="font-black text-slate-800">
-                {entry.value} {unit}
+                {localizeNumber(entry.value, language)} {unit}
               </span>
             </div>
           ))}
@@ -78,18 +80,18 @@ const CustomTooltip = ({ active, payload, label, unit }: any) => {
 };
 
 export default function DoctorReports() {
-  const { patients } = useStore();
+  const { patients, language } = useStore();
   const [selectedPatientId, setSelectedPatientId] = useState<string>(patients[0]?.id || '');
 
   const selectedPatient = patients.find(p => p.id === selectedPatientId);
-  const { gripData, complianceData, romData, timelineStages } = useMemo(() => generateReportData(selectedPatientId), [selectedPatientId]);
+  const { gripData, complianceData, romData, timelineStages } = useMemo(() => generateReportData(selectedPatientId, language), [selectedPatientId, language]);
 
   return (
     <div className="space-y-6 max-w-6xl mx-auto pb-10">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Recovery Reports</h1>
-          <p className="text-muted-foreground">Comprehensive analytics and progress tracking.</p>
+          <h1 className="text-3xl font-bold tracking-tight">{language === 'en' ? 'Recovery Reports' : 'রিকভারি রিপোর্ট'}</h1>
+          <p className="text-muted-foreground">{language === 'en' ? 'Comprehensive analytics and progress tracking.' : 'ব্যাপক বিশ্লেষণ এবং অগ্রগতি ট্র্যাকিং।'}</p>
         </div>
         <div className="flex items-center gap-4">
            <select 
@@ -102,7 +104,7 @@ export default function DoctorReports() {
              ))}
            </select>
            <Button variant="outline" className="gap-2">
-             <Download className="w-4 h-4" /> Export PDF
+             <Download className="w-4 h-4" /> {language === 'en' ? 'Export PDF' : 'পিডিএফ এক্সপোর্ট করুন'}
            </Button>
         </div>
       </div>
@@ -115,8 +117,8 @@ export default function DoctorReports() {
                   <TrendingUp className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-emerald-900">Progress Stage</div>
-                  <div className="text-2xl font-bold text-emerald-700">{selectedPatient.progressStage}</div>
+                  <div className="text-sm font-medium text-emerald-900">{language === 'en' ? 'Progress Stage' : 'অগ্রগতির পর্যায়'}</div>
+                  <div className="text-2xl font-bold text-emerald-700">{selectedPatient.progressStage.replace('Phase ', language === 'en' ? 'Phase ' : 'ফেজ ')}</div>
                 </div>
              </CardContent>
            </Card>
@@ -126,8 +128,8 @@ export default function DoctorReports() {
                   <CheckCircle2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-blue-900">Compliance Score</div>
-                  <div className="text-2xl font-bold text-blue-700">{selectedPatient.complianceScore}%</div>
+                  <div className="text-sm font-medium text-blue-900">{language === 'en' ? 'Compliance Score' : 'কমপ্লায়েন্স স্কোর'}</div>
+                  <div className="text-2xl font-bold text-blue-700">{localizeNumber(selectedPatient.complianceScore, language)}%</div>
                 </div>
              </CardContent>
            </Card>
@@ -137,8 +139,8 @@ export default function DoctorReports() {
                   <Activity className="w-6 h-6" />
                 </div>
                 <div>
-                  <div className="text-sm font-medium text-purple-900">Last Session</div>
-                  <div className="text-2xl font-bold text-purple-700">{new Date(selectedPatient.lastSessionDate).toLocaleDateString()}</div>
+                  <div className="text-sm font-medium text-purple-900">{language === 'en' ? 'Last Session' : 'শেষ সেশন'}</div>
+                  <div className="text-2xl font-bold text-purple-700">{new Date(selectedPatient.lastSessionDate).toLocaleDateString(language === 'en' ? 'en-US' : 'bn-BD', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
                 </div>
              </CardContent>
            </Card>
@@ -148,8 +150,8 @@ export default function DoctorReports() {
       <div className="grid lg:grid-cols-2 gap-6">
         <Card className="col-span-1 border-slate-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Grip Strength Over Time</CardTitle>
-            <CardDescription>Measured in Newtons (N) across recent weeks</CardDescription>
+            <CardTitle>{language === 'en' ? 'Grip Strength Over Time' : 'সময়ের সাথে গ্রিপ শক্তি'}</CardTitle>
+            <CardDescription>{language === 'en' ? 'Measured in Newtons (N) across recent weeks' : 'সাম্প্রতিক সপ্তাহগুলিতে নিউটনে (N) পরিমাপ করা হয়েছে'}</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -157,10 +159,10 @@ export default function DoctorReports() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="date" axisLine={false} tickLine={false} stroke="#64748b" fontSize={12} />
                 <YAxis axisLine={false} tickLine={false} stroke="#64748b" fontSize={12} />
-                <Tooltip content={<CustomTooltip unit="N" />} />
+                <Tooltip content={<CustomTooltip unit={language === 'en' ? 'N' : 'নি.'} language={language} />} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                <Line type="monotone" dataKey="left" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} name="Affected Hand" animationDuration={1000} />
-                <Line type="monotone" dataKey="right" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" dot={false} name="Healthy Hand (Baseline)" animationDuration={1000} />
+                <Line type="monotone" dataKey="left" stroke="#0ea5e9" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} name={language === 'en' ? 'Affected Hand' : 'আক্রান্ত হাত'} animationDuration={1000} />
+                <Line type="monotone" dataKey="right" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 5" dot={false} name={language === 'en' ? 'Healthy Hand (Baseline)' : 'সুস্থ হাত (বেসলাইন)'} animationDuration={1000} />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -168,8 +170,8 @@ export default function DoctorReports() {
 
         <Card className="col-span-1 border-slate-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Range of Motion Tracker</CardTitle>
-            <CardDescription>Max flexion achieved vs previous week</CardDescription>
+            <CardTitle>{language === 'en' ? 'Range of Motion Tracker' : 'গতির পরিসরের ট্র্যাকার'}</CardTitle>
+            <CardDescription>{language === 'en' ? 'Max flexion achieved vs previous week' : 'অর্জিত সর্বোচ্চ ফ্লেক্সন বনাম গত সপ্তাহ'}</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -177,10 +179,10 @@ export default function DoctorReports() {
                 <PolarGrid stroke="#e2e8f0" />
                 <PolarAngleAxis dataKey="finger" tick={{ fill: '#64748b', fontSize: 12 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                <Radar name="Current Week" dataKey="A" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.4} animationDuration={1000} />
-                <Radar name="Previous Week" dataKey="B" stroke="#cbd5e1" fill="#cbd5e1" fillOpacity={0.4} animationDuration={1000} />
+                <Radar name={language === 'en' ? 'Current Week' : 'বর্তমান সপ্তাহ'} dataKey="A" stroke="#0ea5e9" fill="#0ea5e9" fillOpacity={0.4} animationDuration={1000} />
+                <Radar name={language === 'en' ? 'Previous Week' : 'গত সপ্তাহ'} dataKey="B" stroke="#cbd5e1" fill="#cbd5e1" fillOpacity={0.4} animationDuration={1000} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                <Tooltip content={<CustomTooltip unit="%" />} />
+                <Tooltip content={<CustomTooltip unit="%" language={language} />} />
               </RadarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -188,8 +190,8 @@ export default function DoctorReports() {
 
         <Card className="col-span-1 lg:col-span-2 border-slate-200 shadow-sm">
           <CardHeader>
-            <CardTitle>Session Duration Compliance</CardTitle>
-            <CardDescription>Daily prescribed vs actual minutes completed</CardDescription>
+            <CardTitle>{language === 'en' ? 'Session Duration Compliance' : 'সেশনের সময়কাল কমপ্লায়েন্স'}</CardTitle>
+            <CardDescription>{language === 'en' ? 'Daily prescribed vs actual minutes completed' : 'দৈনিক প্রস্তাবিত বনাম সম্পন্ন প্রকৃত মিনিট'}</CardDescription>
           </CardHeader>
           <CardContent className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
@@ -197,10 +199,10 @@ export default function DoctorReports() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="day" axisLine={false} tickLine={false} stroke="#64748b" fontSize={12} />
                 <YAxis axisLine={false} tickLine={false} stroke="#64748b" fontSize={12} />
-                <Tooltip cursor={{ fill: '#f8fafc' }} content={<CustomTooltip unit="min" />} />
+                <Tooltip cursor={{ fill: '#f8fafc' }} content={<CustomTooltip unit={language === 'en' ? 'min' : 'মিনিট'} language={language} />} />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                <Bar dataKey="target" fill="#e2e8f0" radius={[4, 4, 0, 0]} name="Target Duration" animationDuration={1000} />
-                <Bar dataKey="actual" fill="#0ea5e9" radius={[4, 4, 0, 0]} name="Actual Duration" animationDuration={1000} />
+                <Bar dataKey="target" fill="#e2e8f0" radius={[4, 4, 0, 0]} name={language === 'en' ? 'Target Duration' : 'লক্ষ্য সময়কাল'} animationDuration={1000} />
+                <Bar dataKey="actual" fill="#0ea5e9" radius={[4, 4, 0, 0]} name={language === 'en' ? 'Actual Duration' : 'প্রকৃত সময়কাল'} animationDuration={1000} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -208,8 +210,8 @@ export default function DoctorReports() {
 
         <Card className="col-span-1 lg:col-span-2 border-slate-200 shadow-sm mt-2">
           <CardHeader>
-            <CardTitle>Recovery Journey Tracker</CardTitle>
-            <CardDescription>Patient's progression through rehabilitation stages</CardDescription>
+            <CardTitle>{language === 'en' ? 'Recovery Journey Tracker' : 'রিকভারি জার্নি ট্র্যাকার'}</CardTitle>
+            <CardDescription>{language === 'en' ? "Patient's progression through rehabilitation stages" : "পুনর্বাসন পর্যায়গুলির মাধ্যমে রোগীর অগ্রগতি"}</CardDescription>
           </CardHeader>
           <CardContent className="p-6 md:px-10">
             <div className="relative border-l-2 border-slate-200 ml-4 space-y-8">
@@ -232,7 +234,7 @@ export default function DoctorReports() {
                       {item.title}
                       {item.status === 'current' && (
                         <span className="ml-3 text-xs font-medium text-blue-700 bg-blue-100 px-2 py-0.5 rounded-full">
-                          In Progress
+                          {language === 'en' ? 'In Progress' : 'চলমান'}
                         </span>
                       )}
                     </h4>

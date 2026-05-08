@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/components';
 import { PlayCircle, Square, RefreshCw, Wifi, WifiOff, Zap, Activity, Gamepad2, Settings, Info } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn, localizeNumber } from '@/lib/utils';
+import { useStore } from '@/store';
 
 interface SensorData {
   init: boolean;
@@ -21,6 +22,7 @@ const DEFAULT_ENDPOINT = 'http://192.168.4.1/data';
 const POLL_INTERVAL = 300; // ms
 
 export function LiveDeviceDemo() {
+  const { language } = useStore();
   const [endpoint, setEndpoint] = useState(DEFAULT_ENDPOINT);
   const [status, setStatus] = useState<'disconnected' | 'connecting' | 'connected' | 'demo'>('disconnected');
   const [isRunning, setIsRunning] = useState(false);
@@ -290,11 +292,11 @@ export function LiveDeviceDemo() {
     <div className="space-y-8 mt-16 pt-16 border-t border-cyan-500/20" id="live-demo-section">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-sm font-bold border border-cyan-500/20 mb-4 shadow-[0_0_15px_rgba(6,182,212,0.2)]">
-          <Gamepad2 className="w-4 h-4" /> Live Device Game Demo
+          <Gamepad2 className="w-4 h-4" /> {language === 'en' ? 'Live Device Game Demo' : 'লাইভ ডিভাইস গেম ডেমো'}
         </div>
-        <h3 className="text-3xl font-bold text-white mb-3">Turn Effort Into Progress</h3>
+        <h3 className="text-3xl font-bold text-white mb-3">{language === 'en' ? 'Turn Effort Into Progress' : 'প্রচেষ্টাকে অগ্রগতিতে রূপান্তর করুন'}</h3>
         <p className="text-slate-300 max-w-2xl mx-auto">
-          Connect to your ESP32 rehabilitation device and control the therapy game using real-time sensor values. Higher muscle effort produces higher sensor values, helping the patient cross obstacles.
+          {language === 'en' ? 'Connect to your ESP32 rehabilitation device and control the therapy game using real-time sensor values. Higher muscle effort produces higher sensor values, helping the patient cross obstacles.' : 'আপনার ESP32 রিহ্যাবিলিটেশন ডিভাইসের সাথে সংযোগ করুন এবং রিয়েল-টাইম সেন্সর মান ব্যবহার করে থেরাপি গেম নিয়ন্ত্রণ করুন। উচ্চতর পেশী প্রচেষ্টায় উচ্চতর সেন্সর মান উৎপন্ন হয়, যা রোগীকে বাধা অতিক্রম করতে সাহায্য করে।'}
         </p>
       </div>
 
@@ -305,7 +307,7 @@ export function LiveDeviceDemo() {
           <div className="absolute -right-4 -top-4 w-32 h-32 bg-cyan-500/10 blur-2xl rounded-full"></div>
           
           <h4 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Settings className="w-5 h-5 text-cyan-400" /> Connection Panel
+            <Settings className="w-5 h-5 text-cyan-400" /> {language === 'en' ? 'Connection Panel' : 'সংযোগ প্যানেল'}
           </h4>
 
           {/* Connection Status Badge */}
@@ -322,24 +324,24 @@ export function LiveDeviceDemo() {
             {status === 'demo' && <Activity className="w-5 h-5" />}
             
             <span>
-              {status === 'disconnected' ? 'Device Not Connected' :
-               status === 'connecting' ? 'Connecting to Device...' :
-               status === 'connected' ? 'Device Connected' :
-               'Connection Failed — Running Demo Mode'}
+              {status === 'disconnected' ? (language === 'en' ? 'Device Not Connected' : 'ডিভাইস সংযুক্ত নেই') :
+               status === 'connecting' ? (language === 'en' ? 'Connecting to Device...' : 'ডিভাইসের সাথে সংযুক্ত হচ্ছে...') :
+               status === 'connected' ? (language === 'en' ? 'Device Connected' : 'ডিভাইস সংযুক্ত') :
+               (language === 'en' ? 'Connection Failed — Running Demo Mode' : 'সংযোগ ব্যর্থ হয়েছে — ডেমো মোড চলছে')}
             </span>
           </div>
 
           <div className="space-y-4 mb-8">
             <div className="bg-slate-800/50 rounded-lg p-3 border border-slate-700/50">
-              <div className="text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">ESP32 Wi-Fi Details</div>
+              <div className="text-xs text-slate-400 mb-1 font-mono uppercase tracking-wider">{language === 'en' ? 'ESP32 Wi-Fi Details' : 'ESP32 ওয়াই-ফাই বিবরণ'}</div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-white">SSID: <span className="font-bold text-cyan-400">HandRehab</span></span>
-                <span className="text-sm text-white">Pass: <span className="font-bold text-cyan-400">12345678</span></span>
+                <span className="text-sm text-white">{language === 'en' ? 'SSID:' : 'SSID:'} <span className="font-bold text-cyan-400">HandRehab</span></span>
+                <span className="text-sm text-white">{language === 'en' ? 'Pass:' : 'পাসওয়ার্ড:'} <span className="font-bold text-cyan-400">{localizeNumber(12345678, language)}</span></span>
               </div>
             </div>
             
             <div>
-              <label className="text-xs text-slate-400 font-mono uppercase tracking-wider mb-1 block">Device Endpoint</label>
+              <label className="text-xs text-slate-400 font-mono uppercase tracking-wider mb-1 block">{language === 'en' ? 'Device Endpoint' : 'ডিভাইস এন্ডপয়েন্ট'}</label>
               <Input 
                 value={endpoint} 
                 onChange={(e) => setEndpoint(e.target.value)}
@@ -350,7 +352,7 @@ export function LiveDeviceDemo() {
             
             <p className="text-xs text-slate-500 flex items-start gap-1.5">
                <Info className="w-4 h-4 flex-shrink-0 mt-0.5 text-cyan-500/70" />
-               Connect to the ESP32 Wi-Fi network first, then click Connect.
+               {language === 'en' ? 'Connect to the ESP32 Wi-Fi network first, then click Connect.' : 'প্রথমে ESP32 ওয়াই-ফাই নেটওয়ার্কের সাথে সংযোগ করুন, তারপর কানেক্ট ক্লিক করুন।'}
             </p>
           </div>
 
@@ -360,7 +362,7 @@ export function LiveDeviceDemo() {
                disabled={isRunning || status === 'connecting' || status === 'connected'}
                className="w-full bg-slate-800 hover:bg-slate-700 border border-slate-600 text-white"
              >
-               Connect Device
+               {language === 'en' ? 'Connect Device' : 'ডিভাইস কানেক্ট করুন'}
              </Button>
              
              <div className="grid grid-cols-2 gap-3">
@@ -369,7 +371,7 @@ export function LiveDeviceDemo() {
                  disabled={isRunning}
                  className="bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_15px_rgba(6,182,212,0.3)] border-0"
                >
-                 <PlayCircle className="w-4 h-4 mr-2" /> Start Demo
+                 <PlayCircle className="w-4 h-4 mr-2" /> {language === 'en' ? 'Start Demo' : 'ডেমো শুরু করুন'}
                </Button>
                <Button 
                  onClick={stopDemo} 
@@ -377,7 +379,7 @@ export function LiveDeviceDemo() {
                  variant="outline"
                  className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 hover:text-rose-300"
                >
-                 <Square className="w-4 h-4 mr-2" /> Stop Demo
+                 <Square className="w-4 h-4 mr-2" /> {language === 'en' ? 'Stop Demo' : 'ডেমো বন্ধ করুন'}
                </Button>
              </div>
           </div>
@@ -388,15 +390,15 @@ export function LiveDeviceDemo() {
           {/* Metrics Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
              {[
-               { label: "Active Current", val: sensorData ? Math.max(sensorData.c1, sensorData.c2) : 0, max: 1000, unit: "mA" },
-               { label: "Servo 1 Load", val: sensorData?.l1 || 0, max: 100, unit: "%" },
-               { label: "Servo 2 Load", val: sensorData?.l2 || 0, max: 100, unit: "%" },
-               { label: "Reps", val: sensorData?.rp || 0, max: 30, unit: "" },
+               { label: language === 'en' ? "Active Current" : "সক্রিয় কারেন্ট", val: sensorData ? Math.max(sensorData.c1, sensorData.c2) : 0, max: 1000, unit: "mA" },
+               { label: language === 'en' ? "Servo 1 Load" : "সার্ভো ১ লোড", val: sensorData?.l1 || 0, max: 100, unit: "%" },
+               { label: language === 'en' ? "Servo 2 Load" : "সার্ভো ২ লোড", val: sensorData?.l2 || 0, max: 100, unit: "%" },
+               { label: language === 'en' ? "Reps" : "রেপস", val: sensorData?.rp || 0, max: 30, unit: "" },
              ].map((metric, i) => (
                <div key={i} className="bg-slate-900/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-4 flex flex-col justify-between">
                  <div className="text-xs text-slate-400 font-medium mb-2 truncate">{metric.label}</div>
                  <div>
-                   <div className="text-2xl font-bold text-white mb-2">{typeof metric.val === 'number' ? Number(metric.val.toFixed(2)) : metric.val}<span className="text-sm font-normal text-slate-500 ml-1">{metric.unit}</span></div>
+                   <div className="text-2xl font-bold text-white mb-2">{localizeNumber(typeof metric.val === 'number' ? Number(metric.val.toFixed(2)) : metric.val, language)}<span className="text-sm font-normal text-slate-500 ml-1">{metric.unit}</span></div>
                    <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
                      <div 
                        className="h-full bg-cyan-400 rounded-full transition-all duration-300" 
@@ -417,15 +419,15 @@ export function LiveDeviceDemo() {
             {/* Overlay UI */}
             <div className="absolute top-4 left-6 right-6 flex justify-between items-start pointer-events-none z-10">
               <div>
-                <div className="text-cyan-400 font-bold text-xl drop-shadow-md">Score: {score}</div>
+                <div className="text-cyan-400 font-bold text-xl drop-shadow-md">{language === 'en' ? 'Score:' : 'স্কোর:'} {localizeNumber(score, language)}</div>
                 {gameState === 'demo' && (
                   <div className="mt-1 px-2 py-0.5 bg-purple-500/20 border border-purple-500/50 rounded text-xs text-purple-300 font-medium inline-block backdrop-blur-md shadow-[0_0_10px_rgba(168,85,247,0.3)]">
-                    Demo Mode Active
+                    {language === 'en' ? 'Demo Mode Active' : 'ডেমো মোড সক্রিয়'}
                   </div>
                 )}
               </div>
               <div className="text-right">
-                 <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-1">Live Input Effort</div>
+                 <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-1">{language === 'en' ? 'Live Input Effort' : 'লাইভ ইনপুট প্রচেষ্টা'}</div>
                  <div className="w-32 h-2 bg-slate-800 rounded-full overflow-hidden inline-[flex]">
                     <div 
                       className="h-full bg-emerald-400 rounded-full transition-all duration-100"
@@ -441,13 +443,13 @@ export function LiveDeviceDemo() {
             {/* Hit State Overlay */}
             {gameState === 'hit' && (
               <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm flex flex-col items-center justify-center z-20">
-                <div className="text-3xl font-bold text-rose-500 mb-2 drop-shadow-lg">Obstacle Hit!</div>
-                <div className="text-slate-300 mb-6 font-medium">Final Score: {score}</div>
+                <div className="text-3xl font-bold text-rose-500 mb-2 drop-shadow-lg">{language === 'en' ? 'Obstacle Hit!' : 'বাধা আঘাত করেছে!'}</div>
+                <div className="text-slate-300 mb-6 font-medium">{language === 'en' ? 'Final Score:' : 'চূড়ান্ত স্কোর:'} {localizeNumber(score, language)}</div>
                 <Button 
                   onClick={restartGame} 
                   className="bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)] px-8 pointer-events-auto"
                 >
-                  <RefreshCw className="w-4 h-4 mr-2" /> Play Again
+                  <RefreshCw className="w-4 h-4 mr-2" /> {language === 'en' ? 'Play Again' : 'আবার খেলুন'}
                 </Button>
               </div>
             )}
@@ -459,7 +461,7 @@ export function LiveDeviceDemo() {
                   onClick={startDemo} 
                   className="bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)] px-8 pointer-events-auto text-lg h-12"
                 >
-                  <PlayCircle className="w-5 h-5 mr-2" /> Start Demo
+                  <PlayCircle className="w-5 h-5 mr-2" /> {language === 'en' ? 'Start Demo' : 'ডেমো শুরু করুন'}
                 </Button>
               </div>
             )}
@@ -474,7 +476,7 @@ export function LiveDeviceDemo() {
           <div className="bg-white/5 border border-white/5 rounded-xl p-4 text-sm text-slate-400 flex gap-4">
              <Zap className="w-6 h-6 text-yellow-500 flex-shrink-0" />
              <p>
-               <strong className="text-slate-200">Therapy Benefit:</strong> The game translates your physical sensor data (motor currents) into jump velocity. Higher resistance in the real world directly corresponds to overcoming larger virtual obstacles, converting repetitive therapy into an engaging challenge.
+               <strong className="text-slate-200">{language === 'en' ? 'Therapy Benefit:' : 'থেরাপি সুবিধা:'}</strong> {language === 'en' ? 'The game translates your physical sensor data (motor currents) into jump velocity. Higher resistance in the real world directly corresponds to overcoming larger virtual obstacles, converting repetitive therapy into an engaging challenge.' : 'গেমটি আপনার শারীরিক সেন্সর ডেটাকে (মোটর কারেন্ট) জাম্প গতিতে রূপান্তর করে। বাস্তব জগতে উচ্চতর প্রতিরোধ সরাসরি বৃহত্তর ভার্চুয়াল বাধাগুলি অতিক্রম করার সাথে মিলে যায়, যা একটি পুনরাবৃত্ত থেরাপিকে আকর্ষক চ্যালেঞ্জে রূপান্তর করে।'}
              </p>
           </div>
         </div>
