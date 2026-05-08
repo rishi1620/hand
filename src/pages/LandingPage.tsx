@@ -202,6 +202,136 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* Pricing / Subscription Section */}
+      <section className="py-24 relative overflow-hidden bg-gradient-to-b from-slate-950 via-[#0a1128] to-slate-900">
+        {/* Subtle glowing backgrounds */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-600/20 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-600/20 blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5 pointer-events-none mix-blend-overlay" />
+        
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="text-center mb-16 space-y-4">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+              Choose Your Rehabilitation Plan
+            </h2>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto">
+              Flexible therapy options for every recovery journey
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 items-center max-w-6xl mx-auto">
+            {/* Plan A */}
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl relative overflow-hidden hover:bg-white/10 transition-colors">
+              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-6">
+                <PlayCircle className="w-6 h-6 text-blue-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Plan A</h3>
+              <p className="text-blue-300 font-medium mb-6">Self-Guided Recovery</p>
+              
+              <div className="mb-8">
+                <span className="text-sm text-slate-400 font-medium">Affordable Monthly Subscription</span>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                {[
+                  'Guided exercise tutorials',
+                  'Basic rehabilitation dashboard',
+                  'Daily activity tracking',
+                  'Home-based self therapy',
+                  'No physical device included'
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-slate-300 text-sm">
+                     <CheckCircle2 className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" /> <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button className="w-full bg-blue-600/20 hover:bg-blue-600 border border-blue-500/50 text-blue-300 hover:text-white transition-all">Get Started</Button>
+            </div>
+
+            {/* Plan B (Most Popular) */}
+            <div className="bg-gradient-to-b from-slate-800/80 to-slate-900/80 backdrop-blur-xl border border-cyan-500/50 p-8 rounded-3xl relative overflow-hidden transform md:-translate-y-4 shadow-2xl shadow-cyan-900/20">
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+              <div className="absolute top-4 right-4 bg-cyan-500/20 text-cyan-300 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30">
+                Most Popular
+              </div>
+              <div className="w-12 h-12 bg-cyan-500/20 rounded-xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                <ActivitySquare className="w-6 h-6 text-cyan-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Plan B</h3>
+              <p className="text-cyan-300 font-medium mb-6">Guided Device Rehabilitation</p>
+              
+              <div className="mb-8">
+                <span className="text-sm text-slate-400 font-medium">Device + Therapy Package</span>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                {[
+                  'Smart rehabilitation device access',
+                  'Device purchase or rental option',
+                  'Therapist-guided sessions',
+                  '15 / 30 day therapy packages',
+                  'Real-time monitoring',
+                  'Progress analytics',
+                  'Remote therapist support'
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-slate-200 text-sm font-medium">
+                     <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full" /> <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 border-0">Choose Plan B</Button>
+            </div>
+
+            {/* Plan B+ */}
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-8 rounded-3xl relative overflow-hidden hover:bg-white/10 transition-colors">
+              <div className="absolute top-4 right-4 bg-purple-500/20 text-purple-300 text-xs font-bold px-3 py-1 rounded-full border border-purple-500/30">
+                Advanced Care
+              </div>
+              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-6">
+                <Stethoscope className="w-6 h-6 text-purple-400" />
+              </div>
+              <h3 className="text-2xl font-bold text-white mb-2">Plan B+</h3>
+              <p className="text-purple-300 font-medium mb-6">Specialist Assisted Recovery</p>
+              
+              <div className="mb-8">
+                <span className="text-sm text-slate-400 font-medium">Premium Consultation Package</span>
+              </div>
+
+              <ul className="space-y-4 mb-8">
+                {[
+                  'Everything in Plan B',
+                  'Specialist doctor appointments',
+                  'Personalized recovery plans',
+                  'Advanced analytics',
+                  'Priority consultation support',
+                  'AI-assisted progress insights'
+                ].map(item => (
+                  <li key={item} className="flex items-start gap-3 text-slate-300 text-sm">
+                     <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" /> <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button className="w-full bg-purple-600/20 hover:bg-purple-600 border border-purple-500/50 text-purple-300 hover:text-white transition-all">Go Premium</Button>
+            </div>
+          </div>
+
+          {/* Bottom Comparison Strip */}
+          <div className="mt-16 pt-8 border-t border-white/10 max-w-5xl mx-auto flex flex-wrap justify-center gap-x-8 gap-y-4">
+            {[
+              'Affordable Entry',
+              'Remote Monitoring',
+              'Smart Rehabilitation',
+              'Specialist Support',
+              'Data-Driven Recovery'
+            ].map(feature => (
+              <div key={feature} className="flex items-center gap-2 text-slate-300 text-sm font-medium">
+                <span className="text-emerald-400">✔</span> {feature}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Roles Section */}
       <section className="py-32 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6">
