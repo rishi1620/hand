@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/components';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, Input, Label } from '@/components/ui/components';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/store';
 import { AlertTriangle, Activity, Bluetooth, Wifi } from 'lucide-react';
 
 export default function PatientLiveSession() {
-  const { activeSession, pairedDeviceId, connectDevice, deviceUrl, updateSessionTick } = useStore();
+  const { activeSession, pairedDeviceId, connectDevice, deviceUrl, setDeviceUrl, pairingDevice, pairingStatus } = useStore();
   const [deviceTelemetry, setDeviceTelemetry] = useState<any>(null);
   const [deviceError, setDeviceError] = useState<string | null>(null);
+  const [showWifiConnect, setShowWifiConnect] = useState(false);
+  const [localDeviceUrl, setLocalDeviceUrl] = useState(deviceUrl);
 
   // Poll device telemetry during active session
   useEffect(() => {
@@ -51,7 +53,46 @@ export default function PatientLiveSession() {
                {pairedDeviceId && <Wifi className="w-4 h-4 ml-1 opacity-70" />}
             </div>
             {!pairedDeviceId && (
-               <Button size="sm" onClick={connectDevice}>Pair Local Device</Button>
+               <div className="flex flex-col items-end gap-2 relative">
+                 {pairingDevice ? (
+                   <div className="flex items-center gap-3 px-4 py-2 bg-slate-50 border rounded-lg text-sm text-slate-600">
+                     <Activity className="w-4 h-4 animate-spin text-blue-600" />
+                     <span className="font-medium animate-pulse">{pairingStatus || 'Connecting...'}</span>
+                   </div>
+                 ) : (
+                   <>
+                     <div className="flex gap-2">
+                       <Button size="sm" variant="outline" onClick={connectDevice}><Bluetooth className="w-4 h-4 mr-2" /> <span>Pair Bluetooth</span></Button>
+                       <Button size="sm" onClick={() => setShowWifiConnect(true)}><Wifi className="w-4 h-4 mr-2" /> Connect with Device Wifi</Button>
+                     </div>
+                     {showWifiConnect && (
+                       <div className="absolute top-12 right-0 w-72 bg-white border border-slate-200 shadow-xl p-4 rounded-xl z-50 animate-in fade-in slide-in-from-top-2">
+                          <h4 className="font-semibold text-sm mb-2">Connect to Wi-Fi Device</h4>
+                          <p className="text-xs text-muted-foreground mb-4 leading-relaxed">Ensure your computer or phone is connected to the HandRehab device's local Wi-Fi hotspot.</p>
+                          <div className="space-y-3">
+                             <div className="space-y-1.5">
+                               <Label className="text-xs font-medium">Device IP Address</Label>
+                               <Input 
+                                 value={localDeviceUrl} 
+                                 onChange={e => setLocalDeviceUrl(e.target.value)} 
+                                 placeholder="http://192.168.4.1"
+                                 className="h-8 text-sm"
+                               />
+                             </div>
+                             <div className="flex justify-end gap-2 pt-1">
+                               <Button size="sm" variant="ghost" onClick={() => setShowWifiConnect(false)}>Cancel</Button>
+                               <Button size="sm" onClick={() => {
+                                 setDeviceUrl(localDeviceUrl);
+                                 connectDevice();
+                                 setShowWifiConnect(false);
+                               }}>Connect</Button>
+                             </div>
+                          </div>
+                       </div>
+                     )}
+                   </>
+                 )}
+               </div>
             )}
         </div>
       </div>
