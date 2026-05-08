@@ -2,9 +2,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/store';
 import { AppStrings } from '@/config/strings';
-import { Calendar, PlayCircle, Trophy, Activity, ArrowRight } from 'lucide-react';
+import { Calendar, PlayCircle, Trophy, Activity, ArrowRight, Settings2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { cn, localizeNumber } from '@/lib/utils';
+import { PhysioParameterDialog } from '@/components/PhysioParameterDialog';
 
 export default function PatientDashboard() {
   const { patients, currentUser, language } = useStore();
@@ -75,33 +76,103 @@ export default function PatientDashboard() {
         </div>
       </div>
 
-      {/* Recent Progress Snippet */}
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle>{strings.RecentActivity}</CardTitle>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/patient/sessions')}>
-            {strings.ViewAll} <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        </CardHeader>
-        <CardContent>
-           <div className="border rounded-lg divide-y">
-              {[
-                { date: language === 'en' ? 'Yesterday' : 'গতকাল', duration: '15', score: language === 'en' ? 'Excellent' : 'চমৎকার' },
-                { date: language === 'en' ? 'Oct 24' : 'অক্টো ২৪', duration: '12', score: language === 'en' ? 'Good' : 'ভালো' },
-              ].map((s, i) => (
-                 <div key={i} className="p-4 flex justify-between items-center bg-muted/50 ">
-                    <div>
-                      <div className="font-medium">{s.date}</div>
-                      <div className="text-sm text-muted-foreground">{localizeNumber(s.duration, language)} {language === 'en' ? 'min' : 'মিনিট'} {language === 'en' ? 'session' : 'সেশন'}</div>
-                    </div>
-                    <div className="px-3 py-1 bg-emerald-100 text-emerald-700   rounded-full text-xs font-medium">
-                      {s.score}
-                    </div>
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="lg:col-span-1 border-0 shadow-sm ring-1 ring-slate-100">
+          <CardHeader>
+            <CardTitle className="text-xl">Active Therapy Queue</CardTitle>
+            <CardDescription>Therapists scheduled for remote robotic sessions today.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {/* Self-Guided Session */}
+              <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-emerald-100 bg-emerald-50 hover:bg-emerald-100 transition-colors">
+                 <div className="flex items-center gap-4">
+                   <div className="w-10 h-10 rounded-full bg-emerald-200 text-emerald-700 flex items-center justify-center font-bold text-lg">
+                     <Activity className="w-5 h-5" />
+                   </div>
+                   <div>
+                     <div className="font-bold text-slate-800 text-base">Self-Guided Session</div>
+                     <div className="text-sm text-slate-500 mt-0.5">Anytime • Status: Ready</div>
+                   </div>
                  </div>
+                 <div className="flex gap-3">
+                    <PhysioParameterDialog 
+                      patientName={currentUser?.name || "Patient"} 
+                      patientId={currentUser?.id || "1"} 
+                      trigger={
+                        <Button size="sm" variant="outline" className="gap-2 px-4 whitespace-nowrap text-slate-700 border-slate-200 hover:bg-slate-100">
+                          <Settings2 className="w-4 h-4" /> Parameters
+                        </Button>
+                      } 
+                    />
+                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white gap-2 px-6 shadow-sm shadow-emerald-600/20" onClick={() => navigate('/patient/live')}>
+                      <PlayCircle className="w-4 h-4" /> Start
+                    </Button>
+                 </div>
+              </div>
+
+              {[
+                { name: 'Dr. Sarah Jenkins', time: '10:00 AM', status: 'Ready' },
+                { name: 'Dr. Robert Chen', time: '11:30 AM', status: 'Scheduled' },
+                { name: 'Linda Maxwell', time: '02:00 PM', status: 'Scheduled' },
+              ].map((pt, i) => (
+                <div key={i} className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors">
+                  <div className="flex items-center gap-4">
+                     <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-lg">{pt.name.replace('Dr. ', '').charAt(0)}</div>
+                     <div>
+                       <div className="font-bold text-slate-800 text-base">{pt.name}</div>
+                       <div className="text-sm text-slate-500 mt-0.5">{pt.time} • Status: {pt.status}</div>
+                     </div>
+                  </div>
+                  <div className="flex gap-3">
+                     <PhysioParameterDialog 
+                      patientName={currentUser?.name || "Patient"} 
+                      patientId={currentUser?.id || "1"} 
+                      trigger={
+                        <Button size="sm" variant="outline" className="gap-2 px-4 whitespace-nowrap text-slate-700 border-slate-200 hover:bg-slate-100">
+                          <Settings2 className="w-4 h-4" /> Parameters
+                        </Button>
+                      } 
+                    />
+                     <Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 px-6 shadow-sm shadow-indigo-600/20" onClick={() => navigate('/patient/live')}>
+                       <PlayCircle className="w-4 h-4" /> Start
+                     </Button>
+                  </div>
+                </div>
               ))}
-           </div>
-        </CardContent>
-      </Card>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Progress Snippet */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle>{strings.RecentActivity}</CardTitle>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/patient/sessions')}>
+              {strings.ViewAll} <ArrowRight className="w-4 h-4 ml-1" />
+            </Button>
+          </CardHeader>
+          <CardContent>
+             <div className="border rounded-lg divide-y">
+                {[
+                  { date: language === 'en' ? 'Yesterday' : 'গতকাল', duration: '15', score: language === 'en' ? 'Excellent' : 'চমৎকার' },
+                  { date: language === 'en' ? 'Oct 24' : 'অক্টো ২৪', duration: '12', score: language === 'en' ? 'Good' : 'ভালো' },
+                  { date: language === 'en' ? 'Oct 22' : 'অক্টো ২২', duration: '10', score: language === 'en' ? 'Fair' : 'মোটামুটি' },
+                ].map((s, i) => (
+                   <div key={i} className="p-4 flex justify-between items-center bg-muted/50 ">
+                      <div>
+                        <div className="font-medium">{s.date}</div>
+                        <div className="text-sm text-muted-foreground">{localizeNumber(s.duration, language)} {language === 'en' ? 'min' : 'মিনিট'} {language === 'en' ? 'session' : 'সেশন'}</div>
+                      </div>
+                      <div className="px-3 py-1 bg-emerald-100 text-emerald-700   rounded-full text-xs font-medium">
+                        {s.score}
+                      </div>
+                   </div>
+                ))}
+             </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
