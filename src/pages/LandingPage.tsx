@@ -8,6 +8,7 @@ import {
   ActivitySquare, ShieldCheck, FileBarChart, Gamepad2, HeartHandshake,
   ArrowRight, PlayCircle
 } from "lucide-react";
+import { LiveDeviceDemo } from '@/components/LiveDeviceDemo';
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -247,14 +248,30 @@ export default function LandingPage() {
                   '15 / 30 day therapy packages',
                   'Real-time monitoring',
                   'Progress analytics',
-                  'Remote therapist support'
+                  'Remote therapist support',
+                  'Live sensor-based game demo'
                 ].map(item => (
                   <li key={item} className="flex items-start gap-3 text-slate-200 text-sm font-medium">
                      <CheckCircle2 className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5 shadow-[0_0_10px_rgba(6,182,212,0.5)] rounded-full" /> <span>{item}</span>
                   </li>
                 ))}
               </ul>
-              <Button className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 border-0">Choose Plan B</Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    scrollToPlan('B', planBRef);
+                    setTimeout(() => {
+                      document.getElementById('live-demo-section')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 500);
+                  }}
+                  className="w-full bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-lg shadow-cyan-500/25 border-0"
+                >
+                  Try Live Demo
+                </Button>
+                <Button className="w-full bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30">Choose Therapist</Button>
+                <Button className="w-full bg-slate-800 hover:bg-slate-700 text-cyan-300 border border-cyan-500/30">Explore Devices</Button>
+              </div>
             </div>
 
             {/* Plan B+ */}
@@ -475,6 +492,9 @@ export default function LandingPage() {
                 </div>
               </div>
             </div>
+            
+            {/* Live Device Game Demo Section */}
+            <LiveDeviceDemo />
           </div>
         </div>
       </div>
