@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/components';
 import { Button } from '@/components/ui/button';
 import { useStore } from '@/store';
-import { AlertTriangle, Activity, Bluetooth } from 'lucide-react';
+import { AlertTriangle, Activity, Bluetooth, Wifi } from 'lucide-react';
 
 export default function PatientLiveSession() {
   const { activeSession, pairedDeviceId, connectDevice, deviceUrl, updateSessionTick } = useStore();
@@ -48,6 +48,7 @@ export default function PatientLiveSession() {
             <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium border ${pairedDeviceId ? 'bg-emerald-50 text-emerald-700 border-emerald-200  ' : 'bg-secondary text-muted-foreground  '}`}>
                <Bluetooth className="w-4 h-4" />
                {pairedDeviceId ? `Local Device: ${pairedDeviceId}` : 'Disconnected'}
+               {pairedDeviceId && <Wifi className="w-4 h-4 ml-1 opacity-70" />}
             </div>
             {!pairedDeviceId && (
                <Button size="sm" onClick={connectDevice}>Pair Local Device</Button>
